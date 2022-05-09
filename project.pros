@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Dank Code",
+    "project_name": "autoaim.exe",
     "target": "v5",
     "templates": {
       "kernel": {
