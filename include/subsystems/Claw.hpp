@@ -17,12 +17,12 @@ private:
     /**
      * The motors on the claw
      */
-    std::list<pros::Motor*>* motorList;
+    std::list<pros::Motor*> motorList;
 
     /**
      * The pistons on the claw
      */
-    std::list<pros::ADIDigitalOut*>* pistonList;
+    std::list<pros::ADIDigitalOut*> pistonList;
 
     /**
      * The PID controller for the claw
@@ -32,23 +32,23 @@ private:
     /**
      * The bounding positions of the claw
      */
-    double* minPosition;
-    double* maxPosition;
+    double minPosition;
+    double maxPosition;
 
     /**
      * The position of the claw when it is open
      */
-    double* openPosition;
+    double openPosition;
 
     /**
      * The position of the claw when it is closed
      */
-    double* closedPosition;
+    double closedPosition;
 
     /**
      * Whether the claw is open or not
      */
-    bool* isOpen;
+    bool isOpen;
 
 public:
     /**
@@ -83,55 +83,55 @@ public:
          * @param motor The motor being added
          * @return The builder for build chaining
          */
-        ClawBuilder* WithMotor(pros::Motor* motor);
+        ClawBuilder* withMotor(pros::Motor* motor);
 
         /**
          * Adds a piston to the builder data
          * @param piston The piston being added
          * @return The builder for build chaining
          */
-        ClawBuilder* WithPiston(pros::ADIDigitalOut* piston);
+        ClawBuilder* withPiston(pros::ADIDigitalOut* piston);
 
         /**
          * Adds a PID controller to the builder data
          * @param pid The PID controller being added
          * @return The buider for build chaining
          */
-        ClawBuilder* WithPID(PID* pid);
+        ClawBuilder* withPID(PID* pid);
 
         /**
          * Adds a minimum position for the claw to the builder data
          * @param minPosition The minimum position being added
          * @return The builder for build chaining
          */
-        ClawBuilder* WithMinPosition(double minPosition);
+        ClawBuilder* withMinPosition(double minPosition);
 
         /**
          * Adds a maximum position for the claw to the builder data
          * @param maxPosition The maximum position being added
          * @return The builder for build chaining
          */
-        ClawBuilder* WithMaxPosition(double maxPosition);
+        ClawBuilder* withMaxPosition(double maxPosition);
 
         /**
          * Adds the position of the claw when it is open to the builder data
          * @param openPosition The position of the claw when it is open
          * @return The builder for build chaining
          */
-        ClawBuilder* WithOpenPosition(double openPosition);
+        ClawBuilder* withOpenPosition(double openPosition);
 
         /**
          * Adds the position of the claw when it is closed to the builder data
          * @param closedPosition The position of the claw when it is closed
          * @return The builder for build chaining
          */
-        ClawBuilder* WithClosedPosition(double closedPosition);
+        ClawBuilder* withClosedPosition(double closedPosition);
 
         /**
          * Builds the Claw using the stored data
          * @return The new Claw
          */
-        Claw* Build();
+        Claw* build();
     };
 
     /**
@@ -148,61 +148,61 @@ public:
     /**
      * Initializes the claw
      */
-    void Initialize();
+    void initialize();
 
     /**
      * Sets the motors on the claw to the designated power level
      * @param power The power level the motors are being set to
      */
-    void SetClaw(double power);
+    void setClaw(double power);
 
     /**
      * Opens the claw
      */
-    void Open();
+    void open();
 
     /**
      * Closes the claw
      */
-    void Close();
+    void close();
 
     /**
      * Holds the current position of the claw
      */
-    void HoldPosition();
+    void holdPosition();
 
     /**
      * Gets the current position of the claw
      * @return The current position of the claw
      */
-    double GetPosition();
+    double getPosition();
 
     /**
      * Sets the claw to the open position
      */
-    void SetOpen();
+    void setOpen();
 
     /**
      * Sets the claw to the closed position
      */
-    void SetClosed();
+    void setClosed();
 
     /**
      * Toggles the position of the claw between open and closed
      */
-    void TogglePosition();
+    void togglePosition();
 
     /**
      * Checks if the claw is currently open or not
      * @return True if the claw is open, false if not
      */
-    bool IsOpened();
+    bool isOpened();
 
     /**
      * Checks if the claw is currently closed or not
      * @return True if the claw is closed, false if not
      */
-    bool IsClosed();
+    bool isClosed();
 };
 
 #endif
