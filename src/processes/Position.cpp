@@ -3,8 +3,10 @@
 // Constructor Definitions ----------------------------------------------------
 Position::PositionBuilder::PositionBuilder()
 {
-    leftTrackingDistance = nullptr;
-    rightTrackingDistance = nullptr;
+    linearTrackingSensor = nullptr;
+    strafeTrackingSensor = nullptr;
+    inertialSensor = nullptr;
+    linearTrackingDistance = nullptr;
     strafeTrackingDistance = nullptr;
     startX = nullptr;
     startY = nullptr;
@@ -14,15 +16,13 @@ Position::PositionBuilder::PositionBuilder()
 // Destructor Definitions -----------------------------------------------------
 Position::PositionBuilder::~PositionBuilder()
 {
-    if (leftTrackingDistance != nullptr)
+    linearTrackingSensor = nullptr;
+    strafeTrackingSensor = nullptr;
+    inertialSensor = nullptr;
+    if (linearTrackingDistance != nullptr)
     {
-        delete leftTrackingDistance;
-        leftTrackingDistance = nullptr;
-    }
-    if (rightTrackingDistance != nullptr)
-    {
-        delete rightTrackingDistance;
-        rightTrackingDistance = nullptr;
+        delete linearTrackingDistance;
+        linearTrackingDistance = nullptr;
     }
     if (strafeTrackingDistance != nullptr)
     {
@@ -47,23 +47,33 @@ Position::PositionBuilder::~PositionBuilder()
 }
 
 // Public Method Definitions --------------------------------------------------
-Position::PositionBuilder* Position::PositionBuilder::WithLeftDistance(double leftTrackingDistance)
+Position::PositionBuilder* Position::PositionBuilder::withLinearSensor(pros::Rotation *linearTrackingSensor)
 {
-    if (this->leftTrackingDistance == nullptr)
-        this->leftTrackingDistance = new double;
-    *this->leftTrackingDistance = leftTrackingDistance;
+    this->linearTrackingSensor = linearTrackingSensor;
     return this;
 }
 
-Position::PositionBuilder* Position::PositionBuilder::WithRightDistance(double rightTrackingDistance)
+Position::PositionBuilder* Position::PositionBuilder::withStrafeSensor(pros::Rotation *strafeTrackingSensor)
 {
-    if (this->rightTrackingDistance == nullptr)
-        this->rightTrackingDistance = new double;
-    *this->rightTrackingDistance = rightTrackingDistance;
+    this->strafeTrackingSensor = strafeTrackingSensor;
     return this;
 }
 
-Position::PositionBuilder* Position::PositionBuilder::WithStrafeDistance(double strafeTrackingDistance)
+Position::PositionBuilder* Position::PositionBuilder::withInertialSensor(pros::Imu *inertialSensor)
+{
+    this->inertialSensor = inertialSensor;
+    return this;
+}
+
+Position::PositionBuilder* Position::PositionBuilder::withLinearDistance(double linearTrackingDistance)
+{
+    if (this->linearTrackingDistance == nullptr)
+        this->linearTrackingDistance = new double;
+    *this->linearTrackingDistance = linearTrackingDistance;
+    return this;
+}
+
+Position::PositionBuilder* Position::PositionBuilder::withStrafeDistance(double strafeTrackingDistance)
 {
     if (this->strafeTrackingDistance == nullptr)
         this->strafeTrackingDistance = new double;
@@ -71,7 +81,7 @@ Position::PositionBuilder* Position::PositionBuilder::WithStrafeDistance(double 
     return this;
 }
 
-Position::PositionBuilder* Position::PositionBuilder::WithStartX(double startX)
+Position::PositionBuilder* Position::PositionBuilder::withStartX(double startX)
 {
     if (this->startX == nullptr)
         this->startX = new double;
@@ -79,7 +89,7 @@ Position::PositionBuilder* Position::PositionBuilder::WithStartX(double startX)
     return this;
 }
 
-Position::PositionBuilder* Position::PositionBuilder::WithStartY(double startY)
+Position::PositionBuilder* Position::PositionBuilder::withStartY(double startY)
 {
     if (this->startY == nullptr)
         this->startY = new double;
@@ -87,7 +97,7 @@ Position::PositionBuilder* Position::PositionBuilder::WithStartY(double startY)
     return this;
 }
 
-Position::PositionBuilder* Position::PositionBuilder::WithStartAngle(double startAngle)
+Position::PositionBuilder* Position::PositionBuilder::withStartAngle(double startAngle)
 {
     if (this->startTheta == nullptr)
         this->startTheta = new double;
@@ -95,7 +105,7 @@ Position::PositionBuilder* Position::PositionBuilder::WithStartAngle(double star
     return this;
 }
 
-Position* Position::PositionBuilder::Build()
+Position* Position::PositionBuilder::build()
 {
     return new Position(this);
 }
@@ -103,235 +113,155 @@ Position* Position::PositionBuilder::Build()
 // Constructor Definitions ----------------------------------------------------
 Position::Position(PositionBuilder* builder)
 {
-    // Create the pointers
-    leftTrackingDistance = new double;
-    rightTrackingDistance = new double;
-    strafeTrackingDistance = new double;
-    currentX = new double;
-    currentY = new double;
-    currentTheta = new double;
-    lastLeft = new double;
-    lastRight = new double;
-    lastStrafe = new double;
-    lastTheta = new double;
-    resetX = new double;
-    resetY = new double;
-    resetTheta = new double;
-
     // Initialize the builder variables
-    if (builder->leftTrackingDistance != nullptr)
-        *this->leftTrackingDistance = *builder->leftTrackingDistance;
+    this->linearTrackingSensor = builder->linearTrackingSensor;
+    this->strafeTrackingSensor = builder->strafeTrackingSensor;
+    this->inertialSensor = builder->inertialSensor;
+
+    if (builder->linearTrackingDistance != nullptr)
+        this->linearTrackingDistance = *builder->linearTrackingDistance;
     else
-        *this->leftTrackingDistance = 0.0;
-    
-    if (builder->rightTrackingDistance != nullptr)
-        *this->rightTrackingDistance = *builder->rightTrackingDistance;
-    else
-        *this->rightTrackingDistance = 0.0;
+        this->linearTrackingDistance = 0.0;
 
     if (builder->strafeTrackingDistance != nullptr)
-        *this->strafeTrackingDistance = *builder->strafeTrackingDistance;
+        this->strafeTrackingDistance = *builder->strafeTrackingDistance;
     else
-        *this->strafeTrackingDistance = 0.0;
+        this->strafeTrackingDistance = 0.0;
 
     if (builder->startX != nullptr)
-        *this->currentX = *builder->startX;
+        this->resetX = *builder->startX;
     else
-        *this->currentX = 0.0;
+        this->resetX = 0.0;
 
     if (builder->startY != nullptr)
-        *this->currentY = *builder->startY;
+        this->resetY = *builder->startY;
     else
-        *this->currentY = 0.0;
+        this->resetY = 0.0;
 
     if (builder->startTheta != nullptr)
-        *this->currentTheta = *builder->startTheta;
+        this->resetTheta = *builder->startTheta;
     else
-        *this->currentTheta = 0.0;
+        this->resetTheta = 0.0;
 
     // Initialize other variables
-    *lastLeft = 0.0;
-    *lastRight = 0.0;
-    *lastStrafe = 0.0;
-    *lastTheta = 0.0;
-    *resetX = *currentX;
-    *resetY = *currentY;
-    *resetTheta = *currentTheta;
+    lastLinear = 0.0;
+    lastStrafe = 0.0;
+    lastTheta = resetTheta;
+    currentX = resetX;
+    currentY = resetY;
+    currentTheta = resetTheta;
 }
 
 // Destructor Definitions -----------------------------------------------------
 Position::~Position()
 {
-    if (leftTrackingDistance != nullptr)
+    if (linearTrackingSensor != nullptr)
     {
-        delete leftTrackingDistance;
-        leftTrackingDistance = nullptr;
+        delete linearTrackingSensor;
+        linearTrackingSensor = nullptr;
     }
-    if (rightTrackingDistance != nullptr)
+    if (strafeTrackingSensor != nullptr)
     {
-        delete rightTrackingDistance;
-        rightTrackingDistance = nullptr;
+        delete strafeTrackingSensor;
+        strafeTrackingSensor = nullptr;
     }
-    if (strafeTrackingDistance != nullptr)
+    if (inertialSensor != nullptr)
     {
-        delete strafeTrackingDistance;
-        strafeTrackingDistance = nullptr;
-    }
-    if (currentX != nullptr)
-    {
-        delete currentX;
-        currentX = nullptr;
-    }
-    if (currentY != nullptr)
-    {
-        delete currentY;
-        currentY = nullptr;
-    }
-    if (currentTheta != nullptr)
-    {
-        delete currentTheta;
-        currentTheta = nullptr;
-    }
-    if (lastLeft != nullptr)
-    {
-        delete lastLeft;
-        lastLeft = nullptr;
-    }
-    if (lastRight != nullptr)
-    {
-        delete lastRight;
-        lastRight = nullptr;
-    }
-    if (lastStrafe != nullptr)
-    {
-        delete lastStrafe;
-        lastStrafe = nullptr;
-    }
-    if (lastTheta != nullptr)
-    {
-        delete lastTheta;
-        lastTheta = nullptr;
-    }
-    if (resetX != nullptr)
-    {
-        delete resetX;
-        resetX = nullptr;
-    }
-    if (resetY != nullptr)
-    {
-        delete resetY;
-        resetY = nullptr;
-    }
-    if (resetTheta != nullptr)
-    {
-        delete resetTheta;
-        resetTheta = nullptr;
+        delete inertialSensor;
+        inertialSensor = nullptr;
     }
 }
 
 // Private Method Definitions -------------------------------------------------
-void Position::SetResetPosition()
+void Position::setResetPosition()
 {
-    *lastLeft = 0.0;
-    *lastRight = 0.0;
-    *lastStrafe = 0.0;
-    *lastTheta = *currentTheta;
-    *resetX = *currentX;
-    *resetY = *currentY;
-    *resetTheta = *currentTheta;
+    linearTrackingSensor->set_position(0.0);
+    strafeTrackingSensor->set_position(0.0);
+    inertialSensor->set_rotation(0.0);
+
+    lastLinear = 0.0;
+    lastStrafe = 0.0;
+    resetX = currentX;
+    resetY = currentY;
+    resetTheta = currentTheta;
 }
 
 // Public Method Definitions --------------------------------------------------
-void Position::UpdatePosition(double leftValue, double rightValue, double strafeValue, double newTheta)
+void Position::updatePosition()
 {
     // Calculate the distance moved by each wheel since the last cycle
-    double leftDistance = leftValue - *lastLeft;
-    double rightDistance = rightValue - *lastRight;
-    double strafeDistance = strafeValue - *lastStrafe;
-
-    // Calculate absolute theta
-    double totalLeft = leftValue;
-    double totalRight = rightValue;
-    //*currentTheta = ((totalRight - totalLeft) / (*leftTrackingDistance + *rightTrackingDistance)) + *resetTheta;
-    *currentTheta = newTheta;
+    double linearDistance = linearTrackingSensor->get_position() - lastLinear;
+    double strafeDistance = strafeTrackingSensor->get_position() - lastStrafe;
 
     // Calculate the change in theta
-    double thetaChange = *currentTheta - *lastTheta;
+    currentTheta = inertialSensor->get_rotation() + resetTheta;
+    thetaVelocity = currentTheta - lastTheta;
 
     // Calculate the local offset
     double forwardDistance = 0.0;
     double sidewaysDistance = 0.0;
-    if (thetaChange == 0.0)
+    if (thetaVelocity == 0.0)
     {
         sidewaysDistance = strafeDistance;
-        forwardDistance = rightDistance;
+        forwardDistance = linearDistance;
     }
     else
     {
-        sidewaysDistance = (2.0 * sin(thetaChange / 2.0)) * ((strafeDistance / thetaChange) + *strafeTrackingDistance);
-        forwardDistance = (2.0 * sin(thetaChange / 2.0)) * ((leftDistance / thetaChange) + *leftTrackingDistance);
+        sidewaysDistance = (2.0 * sin(thetaVelocity / 2.0)) * ((strafeDistance / thetaVelocity) + strafeTrackingDistance);
+        forwardDistance = (2.0 * sin(thetaVelocity / 2.0)) * ((linearDistance / thetaVelocity) + linearTrackingDistance);
     }
 
     // Calculate the average orientation
-    double averageTheta = *lastTheta + (thetaChange / 2.0);
+    double averageTheta = lastTheta + (thetaVelocity / 2.0);
 
     // Calculate the global offset
-    double xChange = sidewaysDistance * -sin(averageTheta) + forwardDistance * cos(averageTheta);
-    double yChange = sidewaysDistance * cos(averageTheta) + forwardDistance * sin(averageTheta);
+    xVelocity = sidewaysDistance * -sin(averageTheta) + forwardDistance * cos(averageTheta);
+    yVelocity = sidewaysDistance * cos(averageTheta) + forwardDistance * sin(averageTheta);
 
     // Calculate the new absolute position
-    *currentX += xChange;
-    *currentY += yChange;
+    currentX += xVelocity;
+    currentY += yVelocity;
 
     // Update the stored previous values
-    *lastLeft = leftValue;
-    *lastRight = rightValue;
-    *lastStrafe = strafeValue;
-    *lastTheta = *currentTheta;
+    lastLinear += linearDistance;
+    lastStrafe += strafeDistance;
+    lastTheta = currentTheta;
 }
 
-void Position::SetX(double x)
+void Position::setPosition(double x, double y, double theta)
 {
-    *currentX = x;
-    SetResetPosition();
+    currentX = x;
+    currentY = y;
+    currentTheta = theta;
+    setResetPosition();
 }
 
-void Position::SetY(double y)
+double Position::getPositionX() const
 {
-    *currentY = y;
-    SetResetPosition();
+    return currentX;
 }
 
-void Position::SetAngle(double angle)
+double Position::getPositionY() const
 {
-    *currentTheta = (angle * 3.1415 / 180.0);
-    SetResetPosition();
+    return currentY;
 }
 
-void Position::SetPosition(double x, double y, double theta)
+double Position::getPositionTheta() const
 {
-    *currentX = x;
-    *currentY = y;
-    *currentTheta = theta;
-    SetResetPosition();
+    return currentTheta;
 }
 
-double Position::GetX() const
+double Position::getVelocityX() const
 {
-    return *currentX;
+    return xVelocity;
 }
 
-double Position::GetY() const
+double Position::getVelocityY() const
 {
-    return *currentY;
+    return yVelocity;
 }
 
-double Position::GetTheta() const
+double Position::getVelocityTheta() const
 {
-    return *currentTheta;
-}
-
-double Position::GetAngle() const
-{
-    return (*currentTheta * 180.0 / 3.1415);
+    return thetaVelocity;
 }

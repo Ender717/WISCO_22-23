@@ -4,6 +4,7 @@
 
 // Included libraries
 #include "./main.h"
+#include "pros/rotation.hpp"
 
 /**
  * This class manages an odometric position calculation system
@@ -12,38 +13,50 @@ class Position
 {
 private:
     /**
+     * The sensors involved with the position tracking system
+     */
+    pros::Rotation* linearTrackingSensor;
+    pros::Rotation* strafeTrackingSensor;
+    pros::Imu* inertialSensor;
+
+    /**
      * The distance from each tracking wheel to the center of the robot
      */
-    double* leftTrackingDistance;
-    double* rightTrackingDistance;
-    double* strafeTrackingDistance;
+    double linearTrackingDistance;
+    double strafeTrackingDistance;
 
     /**
      * The current position of the robot
      */
-    double* currentX;
-    double* currentY;
-    double* currentTheta;
+    double currentX;
+    double currentY;
+    double currentTheta;
+
+    /**
+     * The current velocity of the robot
+     */
+    double xVelocity;
+    double yVelocity;
+    double thetaVelocity;
 
     /**
      * The sensor values during the previous process loop
      */
-    double* lastLeft;
-    double* lastRight;
-    double* lastStrafe;
-    double* lastTheta;
+    double lastLinear;
+    double lastStrafe;
+    double lastTheta;
 
     /**
      * The most recent reset position
      */
-    double* resetX;
-    double* resetY;
-    double* resetTheta;
+    double resetX;
+    double resetY;
+    double resetTheta;
 
     /**
      * Sets a new reset position
      */
-    void SetResetPosition();
+    void setResetPosition();
 
 public:
     /**
@@ -55,8 +68,10 @@ public:
         /**
          * All attributes being used by the builder
          */
-        double* leftTrackingDistance;
-        double* rightTrackingDistance;
+        pros::Rotation* linearTrackingSensor;
+        pros::Rotation* strafeTrackingSensor;
+        pros::Imu* inertialSensor;
+        double* linearTrackingDistance;
         double* strafeTrackingDistance;
         double* startX;
         double* startY;
@@ -73,20 +88,33 @@ public:
         ~PositionBuilder();
 
         /**
-         * Adds the distance from the left tracking wheel to the center of the
-         * robot to the builder
-         * @param leftTrackingDistance The distance between the wheel and center
+         * Adds a linear tracking wheel encoder to the build
+         * @param linearTrackingSensor The linear tracking wheel encoder
          * @return The builder for build chaining
          */
-        PositionBuilder* WithLeftDistance(double leftTrackingDistance);
+        PositionBuilder* withLinearSensor(pros::Rotation* linearTrackingSensor);
 
         /**
-         * Adds the distance from the right tracking wheel to the center of the
-         * robot to the builder
-         * @param rightTrackingDistance The distance between the wheel and center
+         * Adds a strafe tracking wheel encoder to the build
+         * @param strafeTrackingSensor The strafe tracking wheel encoder
          * @return The builder for build chaining
          */
-        PositionBuilder* WithRightDistance(double rightTrackingDistance);
+        PositionBuilder* withStrafeSensor(pros::Rotation* strafeTrackingSensor);
+
+        /**
+         * Adds an inertial sensor to the build
+         * @param inertialSensor The inertial sensor
+         * @return The builder for build chaining
+         */
+        PositionBuilder* withInertialSensor(pros::Imu* inertialSensor);
+
+        /**
+         * Adds the distance from the linear tracking wheel to the center of the
+         * robot to the builder
+         * @param linearTrackingDistance The distance between the wheel and center
+         * @return The builder for build chaining
+         */
+        PositionBuilder* withLinearDistance(double linearTrackingDistance);
 
         /**
          * Adds the distance from the strafe tracking wheel to the center of the
@@ -94,34 +122,34 @@ public:
          * @param strafeTrackingDistance The distance between the wheel and center
          * @return The builder for build chaining
          */
-        PositionBuilder* WithStrafeDistance(double strafeTrackingDistance);
+        PositionBuilder* withStrafeDistance(double strafeTrackingDistance);
 
         /**
          * Adds a starting x-coordinate to the builder
          * @param startX The x-coordinate to initialize the position to
          * @return The builder for build chaining
          */
-        PositionBuilder* WithStartX(double startX);
+        PositionBuilder* withStartX(double startX);
 
         /**
          * Adds a starting y-coordinate to the builder
          * @param startY The y-coordinate to initialize the position to
          * @return The builder for build chaining
          */
-        PositionBuilder* WithStartY(double startY);
+        PositionBuilder* withStartY(double startY);
 
         /**
          * Adds a starting angle to the builder
          * @param startAngle The angle to initialize the position to
          * @return The builder for build chaining
          */
-        PositionBuilder* WithStartAngle(double startAngle);
+        PositionBuilder* withStartAngle(double startAngle);
 
         /**
          * Builds a Position object using the stored data
          * @return the new Position object
          */
-        Position* Build();
+        Position* build();
     };
 
     /**
@@ -137,31 +165,8 @@ public:
 
     /**
      * Updates the position of the system
-     * @param leftValue The current left tracking wheel position
-     * @param rightValue The current right tracking wheel position
-     * @param strafeValue The current strafe tracking wheel position
-     * @param thetaValue The current theta of the system
-     * *Credit to 5225A - The E-Bots Pilons
      */
-    void UpdatePosition(double leftValue, double rightValue, double strafeValue, double thetaValue);
-
-    /**
-     * Sets the x-coordinate of the system
-     * @param x The new x-coordinate
-     */
-    void SetX(double x);
-
-    /**
-     * Sets the y-coordinate of the system
-     * @param y The new y-coordinate
-     */
-    void SetY(double y);
-
-    /**
-     * Sets the angle of the system
-     * @param angle The new angle
-     */
-    void SetAngle(double angle);
+    void updatePosition();
 
     /**
      * Sets the position of the system
@@ -169,31 +174,43 @@ public:
      * @param y The new y-coordinate
      * @param theta The new theta
      */
-    void SetPosition(double x, double y, double theta);
+    void setPosition(double x, double y, double theta);
 
     /**
      * Gets the current x-coordinate of the system
      * @return The current x-coordinate
      */
-    double GetX() const;
+    double getPositionX() const;
 
     /**
      * Gets the current y-coordinate of the system
      * @return The current y-coordinate
      */
-    double GetY() const;
+    double getPositionY() const;
 
     /**
      * Gets the current theta of the system
      * @return The current theta
      */
-    double GetTheta() const;
+    double getPositionTheta() const;
 
     /**
-     * Gets the current angle of the system
-     * @return The current angle
+     * Gets the current x-velocity of the system
+     * @return the current x-velocity
      */
-    double GetAngle() const;
+    double getVelocityX() const;
+
+    /**
+     * Gets the current y-velocity of the system
+     * @return the current y-velocity
+     */
+    double getVelocityY() const;
+    
+    /**
+     * Gets the current theta-velocity of the system
+     * @return the current theta-velocity
+     */
+    double getVelocityTheta() const;
 };
 
 #endif
