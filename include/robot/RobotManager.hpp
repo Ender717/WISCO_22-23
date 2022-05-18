@@ -22,12 +22,12 @@ private:
     /**
      * Creates a pre-configured blue robot
      */
-    void CreateBlueRobot();
+    void createBlueRobot();
 
     /**
      * Creates a pre-configured orange robot
      */
-    void CreateOrangeRobot();
+    void createOrangeRobot();
 
 public:
     /**
@@ -44,13 +44,13 @@ public:
      * Creates a robot of the specified configuration
      * @param config The configuration of robot to create
      */
-    void CreateRobot(RobotConfigs config);
+    void createRobot(RobotConfigs config);
 
     /**
      * Gets the stored robot configuration
      * @return The robot which was created
      */
-    Robot* GetRobot();
+    Robot* getRobot();
 };
 
 #endif

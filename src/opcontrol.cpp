@@ -18,11 +18,12 @@ void opcontrol()
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	Robot* robot = RobotState::robot;
 	AutonController::robot = RobotState::robot;
-	Menu::Erase(0, 0, 480, 272);
+	Menu::erase(0, 0, 480, 272);
 		
 	while(true)
 	{
-		robot->RobotControl(master);
+		robot->robotControl(master);
+		pros::Task::delay(50);
 	}
 
 	delete robot;

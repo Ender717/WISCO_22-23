@@ -4,7 +4,7 @@
 
 // Included libraries
 #include "robot/RobotState.hpp"
-#include "robot/Robot.hpp"
+#include "processes/Position.hpp"
 #include "autonomous/autons.hpp"
 #include "main.h"
 
@@ -30,28 +30,28 @@ namespace Menu
      * @param x2 The right side of the area
      * @param y2 The bottom of the area
      */
-    extern void Erase(int x1, int y1, int x2, int y2);
+    extern void erase(int x1, int y1, int x2, int y2);
     
     /**
      * Draws a selection menu
      */
-    extern void DrawMenuSelect();
+    extern void drawMenuSelect();
 
     /**
      * Runs the autonomous selection process
      */
-    extern void AutonSelect();
+    extern void autonSelect();
 
     /**
      * Runs the robot selection process
      */
-    extern void RobotSelect();
+    extern void robotSelect();
 
     /**
      * Draws the current position of the robot on a 2d field
-     * @param robot The robot whose position is being drawn
+     * @param position The position which is being drawn
      */
-    extern void DrawPosition(Robot* robot);
+    extern void drawPosition(Position position);
 }
 
 #endif

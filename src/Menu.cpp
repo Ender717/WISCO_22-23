@@ -6,14 +6,14 @@ namespace Menu
     bool autonSelected = false;
     bool robotSelected = false;
 
-    void Erase(int x1, int y1, int x2, int y2)
+    void erase(int x1, int y1, int x2, int y2)
     {
         pros::screen::set_pen(COLOR_BLACK);
         pros::screen::fill_rect(x1, y1, x2, y2);
         pros::screen::set_pen(COLOR_WHITE);
     }
 
-    void DrawMenuSelect()
+    void drawMenuSelect()
     {
         // Draw the buttons
         pros::screen::set_pen(COLOR_BLUE);
@@ -38,7 +38,7 @@ namespace Menu
         }
     }
     
-    void AutonSelect()
+    void autonSelect()
     {
         pros::screen::set_pen(COLOR_WHITE);
 
@@ -56,7 +56,7 @@ namespace Menu
             if(touched && status.touch_status == E_TOUCH_RELEASED)
             {
                 touched = false;
-                Erase(0, 40, 480, 90);
+                erase(0, 40, 480, 90);
                 if(status.x >= 100 && status.x <= 180 && status.y >= 100 && status.y <= 180)
                 {
                     auton--;
@@ -76,30 +76,6 @@ namespace Menu
             // Display the auton selection
             switch(auton)
             {
-                case 1:
-                    pros::screen::print(text_format_e_t::E_TEXT_LARGE, 50, 50, "Skills Blue");
-                    break;
-                case 2:
-                    pros::screen::print(text_format_e_t::E_TEXT_LARGE, 50, 50, "Skills Orange");
-                    break;
-                case 3:
-                    pros::screen::print(text_format_e_t::E_TEXT_LARGE, 80, 50, "Left Blue");
-                    break;
-                case 4:
-                    pros::screen::print(text_format_e_t::E_TEXT_LARGE, 80, 50, "Middle Blue");
-                    break;
-                case 5:
-                    pros::screen::print(text_format_e_t::E_TEXT_LARGE, 80, 50, "Right Blue");
-                    break;
-                case 6:
-                    pros::screen::print(text_format_e_t::E_TEXT_LARGE, 80, 50, "Left Orange");
-                    break;
-                case 7:
-                    pros::screen::print(text_format_e_t::E_TEXT_LARGE, 80, 50, "Middle Orange");
-                    break;
-                case 8:
-                    pros::screen::print(text_format_e_t::E_TEXT_LARGE, 80, 50, "Right Orange");
-                    break;
                 default:
                     pros::screen::print(text_format_e_t::E_TEXT_LARGE, 50, 50, "No Auton Selected");
                     break;
@@ -109,7 +85,7 @@ namespace Menu
         Autons::selectedAuton = auton;
     }
 
-    void RobotSelect()
+    void robotSelect()
     {
         RobotState::configuration = new RobotConfigs(RobotConfigs::BLUE);
         pros::screen::set_pen(COLOR_WHITE);
@@ -127,7 +103,7 @@ namespace Menu
             if(touched && status.touch_status == E_TOUCH_RELEASED)
             {
                 touched = false;
-                Erase(0, 40, 480, 90);
+                erase(0, 40, 480, 90);
                 if(status.x >= 100 && status.x <= 180 && status.y >= 100 && status.y <= 180)
                 {
                     if (*RobotState::configuration == RobotConfigs::BLUE)
@@ -164,14 +140,13 @@ namespace Menu
         }
     }
 
-    void DrawPosition(Robot* robot)
+    void drawPosition(Position position)
     {
         // Write the coordinates
         pros::screen::set_pen(COLOR_WHITE);
-        pros::screen::print(text_format_e_t::E_TEXT_SMALL, 32, 32, "X: %.2f", robot->drive->GetX());
-        pros::screen::print(text_format_e_t::E_TEXT_SMALL, 32, 52, "Y: %.2f", robot->drive->GetY());
-        pros::screen::print(text_format_e_t::E_TEXT_SMALL, 32, 72, "Theta: %.2f", (robot->drive->GetTheta() * 180.0 / 3.1415));
-        pros::screen::print(text_format_e_t::E_TEXT_SMALL, 32, 92, "Lift Angle: %.2f", robot->lift->GetAngle());
+        pros::screen::print(text_format_e_t::E_TEXT_SMALL, 32, 32, "X: %.2f", position.getX());
+        pros::screen::print(text_format_e_t::E_TEXT_SMALL, 32, 52, "Y: %.2f", position.getY());
+        pros::screen::print(text_format_e_t::E_TEXT_SMALL, 32, 72, "Theta: %.2f", (position.getTheta() * 180.0 / 3.1415));
 
         // Draw the field
         pros::screen::set_pen(COLOR_LIGHT_GRAY);
@@ -203,15 +178,15 @@ namespace Menu
 
         // Draw the robot
         pros::screen::set_pen(COLOR_ORANGE);
-        double robotX = 344 + (robot->drive->GetX() * 5.0 / 3.0);
-        double robotY = 136 - (robot->drive->GetY() * 5.0 / 3.0);
+        double robotX = 344 + (position.getX() * 5.0 / 3.0);
+        double robotY = 136 - (position.getY() * 5.0 / 3.0);
         pros::screen::fill_circle(robotX, robotY, 15);
         pros::screen::set_pen(COLOR_BLACK);
         pros::screen::draw_circle(robotX, robotY, 15);
 
         // Draw an arrow to show the direction of the robot
         pros::screen::set_pen(COLOR_DARK_BLUE);
-        double angle = robot->drive->GetTheta();
+        double angle = position.getTheta();
 
         double x1 = robotX - (12 * cos(angle));
         double y1 = robotY + (12 * sin(angle));

@@ -33,7 +33,11 @@ Lift::LiftBuilder::~LiftBuilder()
         delete rightMotorList;
         rightMotorList = nullptr;
     }
-    liftPID = nullptr;
+    if (liftPID != nullptr)
+    {
+        delete liftPID;
+        liftPID = nullptr;
+    }
     if (startAngle != nullptr)
     {
         delete startAngle;
@@ -82,7 +86,7 @@ Lift::LiftBuilder::~LiftBuilder()
 }
 
 // Public method definitions --------------------------------------------------
-Lift::LiftBuilder* Lift::LiftBuilder::WithLeftMotor(pros::Motor* motor)
+Lift::LiftBuilder* Lift::LiftBuilder::withLeftMotor(pros::Motor* motor)
 {
     if (leftMotorList == nullptr)
         leftMotorList = new std::list<pros::Motor*>();
@@ -90,7 +94,7 @@ Lift::LiftBuilder* Lift::LiftBuilder::WithLeftMotor(pros::Motor* motor)
     return this;
 }
 
-Lift::LiftBuilder* Lift::LiftBuilder::WithRightMotor(pros::Motor* motor)
+Lift::LiftBuilder* Lift::LiftBuilder::withRightMotor(pros::Motor* motor)
 {
     if (rightMotorList == nullptr)
         rightMotorList = new std::list<pros::Motor*>();
@@ -98,13 +102,13 @@ Lift::LiftBuilder* Lift::LiftBuilder::WithRightMotor(pros::Motor* motor)
     return this;
 }
 
-Lift::LiftBuilder* Lift::LiftBuilder::WithPID(PID* pid)
+Lift::LiftBuilder* Lift::LiftBuilder::withPID(PID* pid)
 {
     liftPID = pid;
     return this;
 }
 
-Lift::LiftBuilder* Lift::LiftBuilder::WithStartAngle(double startAngle)
+Lift::LiftBuilder* Lift::LiftBuilder::withStartAngle(double startAngle)
 {
     if (this->startAngle == nullptr)
         this->startAngle = new double;
@@ -112,7 +116,7 @@ Lift::LiftBuilder* Lift::LiftBuilder::WithStartAngle(double startAngle)
     return this;
 }
 
-Lift::LiftBuilder* Lift::LiftBuilder::WithMinAngle(double minAngle)
+Lift::LiftBuilder* Lift::LiftBuilder::withMinAngle(double minAngle)
 {
     if (this->minAngle == nullptr)
         this->minAngle = new double;
@@ -120,7 +124,7 @@ Lift::LiftBuilder* Lift::LiftBuilder::WithMinAngle(double minAngle)
     return this;
 }
 
-Lift::LiftBuilder* Lift::LiftBuilder::WithMaxAngle(double maxAngle)
+Lift::LiftBuilder* Lift::LiftBuilder::withMaxAngle(double maxAngle)
 {
     if (this->maxAngle == nullptr)
         this->maxAngle = new double;
@@ -128,7 +132,7 @@ Lift::LiftBuilder* Lift::LiftBuilder::WithMaxAngle(double maxAngle)
     return this;
 }
 
-Lift::LiftBuilder* Lift::LiftBuilder::WithStartHeight(double startHeight)
+Lift::LiftBuilder* Lift::LiftBuilder::withStartHeight(double startHeight)
 {
     if (this->startHeight == nullptr)
         this->startHeight = new double;
@@ -136,7 +140,7 @@ Lift::LiftBuilder* Lift::LiftBuilder::WithStartHeight(double startHeight)
     return this;
 }
 
-Lift::LiftBuilder* Lift::LiftBuilder::WithMinHeight(double minHeight)
+Lift::LiftBuilder* Lift::LiftBuilder::withMinHeight(double minHeight)
 {
     if (this->minHeight == nullptr) 
         this->minHeight = new double;
@@ -144,7 +148,7 @@ Lift::LiftBuilder* Lift::LiftBuilder::WithMinHeight(double minHeight)
     return this;
 }
 
-Lift::LiftBuilder* Lift::LiftBuilder::WithMaxHeight(double maxHeight)
+Lift::LiftBuilder* Lift::LiftBuilder::withMaxHeight(double maxHeight)
 {
     if (this->maxHeight == nullptr)
         this->maxHeight = new double;
@@ -152,7 +156,7 @@ Lift::LiftBuilder* Lift::LiftBuilder::WithMaxHeight(double maxHeight)
     return this;
 }
 
-Lift::LiftBuilder* Lift::LiftBuilder::WithCountsPerDegree(double countsPerDegree)
+Lift::LiftBuilder* Lift::LiftBuilder::withCountsPerDegree(double countsPerDegree)
 {
     if (this->countsPerDegree == nullptr)
         this->countsPerDegree = new double;
@@ -160,7 +164,7 @@ Lift::LiftBuilder* Lift::LiftBuilder::WithCountsPerDegree(double countsPerDegree
     return this;
 }
 
-Lift::LiftBuilder* Lift::LiftBuilder::WithCountsPerInch(double countsPerInch)
+Lift::LiftBuilder* Lift::LiftBuilder::withCountsPerInch(double countsPerInch)
 {
     if (this->countsPerInch == nullptr)
         this->countsPerInch = new double;
@@ -168,7 +172,7 @@ Lift::LiftBuilder* Lift::LiftBuilder::WithCountsPerInch(double countsPerInch)
     return this;
 }
 
-Lift::LiftBuilder* Lift::LiftBuilder::WithArmLength(double armLength)
+Lift::LiftBuilder* Lift::LiftBuilder::withArmLength(double armLength)
 {
     if (this->armLength == nullptr)
         this->armLength = new double;
@@ -176,7 +180,7 @@ Lift::LiftBuilder* Lift::LiftBuilder::WithArmLength(double armLength)
     return this;
 }
 
-Lift* Lift::LiftBuilder::Build()
+Lift* Lift::LiftBuilder::build()
 {
     return new Lift(this);
 }
@@ -186,288 +190,222 @@ Lift* Lift::LiftBuilder::Build()
 // Constructor definitions ----------------------------------------------------
 Lift::Lift(LiftBuilder* builder)
 {
-    // Initialize the pointers
-    leftMotorList = new std::list<pros::Motor*>();
-    rightMotorList = new std::list<pros::Motor*>();
-    startAngle = new double;
-    startHeight = new double;
-    countsPerDegree = new double;
-    countsPerInch = new double;
-    armLength = new double;
-    minPosition = new double;
-    maxPosition = new double;
-    holdPosition = new double;
-
     // Set the motors
     if (builder->leftMotorList != nullptr)
         for (std::list<pros::Motor*>::iterator iterator = builder->leftMotorList->begin(); 
             iterator != builder->leftMotorList->end(); iterator++)
-            this->leftMotorList->push_back(*iterator);
+            this->leftMotorList.push_back(*iterator);
 
     if (builder->rightMotorList != nullptr)
         for (std::list<pros::Motor*>::iterator iterator = builder->rightMotorList->begin(); 
             iterator != builder->rightMotorList->end(); iterator++)
-            this->rightMotorList->push_back(*iterator);
+            this->rightMotorList.push_back(*iterator);
 
     // Set the PID controller
-    this->liftPID = builder->liftPID;
+    if (builder->liftPID != nullptr)
+        this->liftPID = new PID(*builder->liftPID);
 
     // Set the starting angle
     if (builder->startAngle != nullptr)
-        *this->startAngle = *builder->startAngle;
+        this->startAngle = *builder->startAngle;
     else
-        *this->startAngle = 0.0;
+        this->startAngle = 0.0;
     
     // Set the starting height
     if (builder->startHeight != nullptr)
-        *this->startHeight = *builder->startHeight;
+        this->startHeight = *builder->startHeight;
     else
-        *this->startHeight = 0.0;
+        this->startHeight = 0.0;
     
     // Set the number of counts per degree
     if (builder->countsPerDegree != nullptr)
-        *this->countsPerDegree = *builder->countsPerDegree;
+        this->countsPerDegree = *builder->countsPerDegree;
     else
-        *this->countsPerDegree = DBL_MIN;
+        this->countsPerDegree = DBL_MIN;
 
     // Set the number of counts per inch
     if (builder->countsPerInch != nullptr)
-        *this->countsPerInch = *builder->countsPerInch;
+        this->countsPerInch = *builder->countsPerInch;
     else
-        *this->countsPerInch = DBL_MIN;
+        this->countsPerInch = DBL_MIN;
 
     // Set the arm length
     if (builder->armLength != nullptr)
-        *this->armLength = *builder->armLength;
+        this->armLength = *builder->armLength;
     else
-        *this->armLength = DBL_MIN;
+        this->armLength = DBL_MIN;
 
     // Set the minimum position
     if (builder->minAngle != nullptr)
-        *minPosition = AngleToPosition(*builder->minAngle);
+        minPosition = angleToPosition(*builder->minAngle);
     else if (builder->minHeight != nullptr)
-        *minPosition = HeightToPosition(*builder->minHeight);
+        minPosition = heightToPosition(*builder->minHeight);
     else
-        *minPosition = -DBL_MAX;
+        minPosition = -DBL_MAX;
 
     // Set the maximum position
     if (builder->maxAngle != nullptr)
-        *maxPosition = AngleToPosition(*builder->maxAngle);
+        maxPosition = angleToPosition(*builder->maxAngle);
     else if (builder->maxHeight != nullptr)
-        *maxPosition = HeightToPosition(*builder->maxHeight);
+        maxPosition = heightToPosition(*builder->maxHeight);
     else
-        *maxPosition = DBL_MAX;
-
-    *holdPosition = 0.0;
+        maxPosition = DBL_MAX;
 }
 
 // Destructor definitions -----------------------------------------------------
 Lift::~Lift()
 {
-    if (leftMotorList != nullptr)
+
+    for (std::list<pros::Motor*>::iterator iterator = leftMotorList.begin(); 
+        iterator != leftMotorList.end(); iterator++)
     {
-        for (std::list<pros::Motor*>::iterator iterator = leftMotorList->begin(); 
-            iterator != leftMotorList->end(); iterator++)
-        {
-            delete *iterator;
-            *iterator = nullptr;
-        }
-        delete leftMotorList;
-        leftMotorList = nullptr;
+        delete *iterator;
+        *iterator = nullptr;
     }
-    if (rightMotorList != nullptr)
+    for (std::list<pros::Motor*>::iterator iterator = rightMotorList.begin(); 
+        iterator != rightMotorList.end(); iterator++)
     {
-        for (std::list<pros::Motor*>::iterator iterator = rightMotorList->begin(); 
-            iterator != rightMotorList->end(); iterator++)
-        {
-            delete *iterator;
-            *iterator = nullptr;
-        }
-        delete rightMotorList;
-        rightMotorList = nullptr;
+        delete *iterator;
+        *iterator = nullptr;
     }
     if (liftPID != nullptr)
     {
         delete liftPID;
         liftPID = nullptr;
     }
-    if (startAngle != nullptr)
-    {
-        delete startAngle;
-        startAngle = nullptr;
-    }
-    if (startHeight != nullptr)
-    {
-        delete startHeight;
-        startHeight = nullptr;
-    }
-    if (countsPerDegree != nullptr)
-    {
-        delete countsPerDegree;
-        countsPerDegree = nullptr;
-    }
-    if (countsPerInch != nullptr)
-    {
-        delete countsPerInch;
-        countsPerInch = nullptr;
-    }
-    if (armLength != nullptr)
-    {
-        delete armLength;
-        armLength = nullptr;
-    }
-    if (minPosition != nullptr)
-    {
-        delete minPosition;
-        minPosition = nullptr;
-    }
-    if (maxPosition != nullptr)
-    {
-        delete maxPosition;
-        maxPosition = nullptr;
-    }
 }
 
 // Private method definitions -------------------------------------------------
-double Lift::AngleToPosition(double angle)
+double Lift::angleToPosition(double angle)
 {
-    double position = (angle * *countsPerDegree) - (*startAngle * *countsPerDegree);
+    double position = (angle * countsPerDegree) - (startAngle * countsPerDegree);
     return position;
 }
 
-double Lift::HeightToPosition(double height)
+double Lift::heightToPosition(double height)
 {
-    double position = (height * *countsPerInch) - (*startHeight * *countsPerInch);
-    position += *armLength * sin(GetAngle());
+    double position = (height * countsPerInch) - (startHeight * countsPerInch);
+    position += armLength * sin(getAngle());
     return position;
 }
 
 // Public method definitions --------------------------------------------------
-void Lift::Initialize()
+void Lift::initialize()
 {
     // Set the positions to 0
-    for (std::list<pros::Motor*>::iterator iterator = leftMotorList->begin(); 
-        iterator != leftMotorList->end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = leftMotorList.begin(); 
+        iterator != leftMotorList.end(); iterator++)
     {
         (*iterator)->tare_position();
         (*iterator)->set_brake_mode(E_MOTOR_BRAKE_COAST);
     }
-    for (std::list<pros::Motor*>::iterator iterator = rightMotorList->begin(); 
-        iterator != rightMotorList->end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = rightMotorList.begin(); 
+        iterator != rightMotorList.end(); iterator++)
     {
         (*iterator)->tare_position();
         (*iterator)->set_brake_mode(E_MOTOR_BRAKE_COAST);
     }
 
-    liftPID->SetTargetValue(0.0);
+    if (liftPID != nullptr)
+        liftPID->setTargetValue(0.0);
 }
 
-void Lift::SetLift(double power)
+void Lift::setLift(double power)
 {
-    for (std::list<pros::Motor*>::iterator iterator = leftMotorList->begin(); 
-         iterator != leftMotorList->end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = leftMotorList.begin(); 
+         iterator != leftMotorList.end(); iterator++)
         (*iterator)->move(power);
-    for (std::list<pros::Motor*>::iterator iterator = rightMotorList->begin(); 
-         iterator != rightMotorList->end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = rightMotorList.begin(); 
+         iterator != rightMotorList.end(); iterator++)
         (*iterator)->move(power);
 }
 
-void Lift::SetHalfLift(double power)
+void Lift::raise()
 {
-    leftMotorList->front()->move(power);
-    rightMotorList->front()->move(power);
-    for (std::list<pros::Motor*>::iterator iterator = ++leftMotorList->begin(); 
-         iterator != leftMotorList->end(); iterator++)
-        (*iterator)->move(0.0);
-    for (std::list<pros::Motor*>::iterator iterator = ++rightMotorList->begin(); 
-         iterator != rightMotorList->end(); iterator++)
-        (*iterator)->move(0.0);
-}
-
-void Lift::Raise()
-{
-    if(!AtTop())
-        SetLift(127.0);
+    if(!atTop())
+        setLift(127.0);
     else
-        SetLift(0.0);
+        setLift(0.0);
 
-    liftPID->SetTargetValue(GetPosition());
-    *holdPosition = GetPosition();
+    if (liftPID != nullptr)
+        liftPID->setTargetValue(getPosition());
 }
 
-void Lift::Lower()
+void Lift::lower()
 {
-    if(!AtBottom())
-        SetLift(-127.0);
+    if(!atBottom())
+        setLift(-127.0);
     else
-        SetLift(0.0);
+        setLift(0.0);
 
-    liftPID->SetTargetValue(GetPosition());
-    *holdPosition = GetPosition();
+    if (liftPID != nullptr)
+        liftPID->setTargetValue(getPosition());
 }
 
-void Lift::Stop()
+void Lift::stop()
 {
-    SetLift(0.0);
+    setLift(0.0);
 }
 
-void Lift::HoldPosition()
+void Lift::holdPosition()
 {
-    if (*holdPosition < *maxPosition || !AtTop())
-        SetLift(liftPID->GetControlValue(GetPosition()));
-    else
-        SetLift(0.0);
+    if (!atBottom())
+    {
+        if (liftPID != nullptr)
+            setLift(liftPID->getControlValue(getPosition()));
+        else
+            setLift(0.0);
+    }
+    else 
+    {
+        setLift(0.0);
+    }
 }
 
-double Lift::GetPosition()
+double Lift::getPosition()
 {
-    return leftMotorList->front()->get_position();
+    double position = 0.0;
+    if (leftMotorList.size() > 0)
+        position = leftMotorList.front()->get_position();
+    return position;
 }
 
-void Lift::HoldUp()
+void Lift::setAngle(double targetAngle)
 {
-    if (*holdPosition > *maxPosition && !AtTop())
-        SetLift(127.0);
-    else
-        SetLift(0.0);
+    double targetPosition = angleToPosition(targetAngle);
+    if (liftPID != nullptr)
+        liftPID->setTargetValue(targetPosition);
 }
 
-void Lift::SetAngle(double targetAngle)
+void Lift::setHeight(double targetHeight)
 {
-    double targetPosition = AngleToPosition(targetAngle);
-    *holdPosition = targetPosition;
-    liftPID->SetTargetValue(targetPosition);
+    double targetPosition = heightToPosition(targetHeight);
+    if (liftPID != nullptr)
+        liftPID->setTargetValue(targetPosition);
 }
 
-void Lift::SetHeight(double targetHeight)
+double Lift::getAngle()
 {
-    double targetPosition = HeightToPosition(targetHeight);
-    *holdPosition = targetPosition;
-    liftPID->SetTargetValue(targetPosition);
-}
-
-double Lift::GetAngle()
-{
-    double angle = *startAngle;
-    if(*countsPerDegree > 0.1)
-        angle += GetPosition() / *countsPerDegree;
+    double angle = startAngle;
+    if(countsPerDegree > 0.1)
+        angle += getPosition() / countsPerDegree;
     return angle;
 }
 
-double Lift::GetHeight()
+double Lift::getHeight()
 {
-    double height = *startHeight + (*armLength * sin(GetAngle()));
-    if(*countsPerInch > 0.1)
-        height += GetPosition() / *countsPerInch;
+    double height = startHeight + (armLength * sin(getAngle()));
+    if(countsPerInch > 0.1)
+        height += getPosition() / countsPerInch;
     return height;
 }
 
-bool Lift::AtBottom()
+bool Lift::atBottom()
 {
-    return GetPosition() <= *minPosition;
+    return getPosition() <= minPosition;
 }
 
-bool Lift::AtTop()
+bool Lift::atTop()
 {
-    return GetPosition() >= *maxPosition;
+    return getPosition() >= maxPosition;
 }

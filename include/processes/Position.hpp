@@ -1,216 +1,159 @@
-// Inclusion Guard
+// Standard inclusion guard
 #ifndef POSITION_HPP
 #define POSITION_HPP
 
-// Included libraries
-#include "./main.h"
-#include "pros/rotation.hpp"
-
 /**
- * This class manages an odometric position calculation system
+ * This class holds a position snapshot from the positioning system
  */
 class Position
 {
 private:
     /**
-     * The sensors involved with the position tracking system
+     * The x-coordinate in the snapshot
      */
-    pros::Rotation* linearTrackingSensor;
-    pros::Rotation* strafeTrackingSensor;
-    pros::Imu* inertialSensor;
+    double x;
 
     /**
-     * The distance from each tracking wheel to the center of the robot
+     * The y-coordinate in the snapshot
      */
-    double linearTrackingDistance;
-    double strafeTrackingDistance;
+    double y;
 
     /**
-     * The current position of the robot
+     * The theta in the snapshot
      */
-    double currentX;
-    double currentY;
-    double currentTheta;
+    double theta;
 
     /**
-     * The current velocity of the robot
+     * The x-velocity in the snapshot
      */
     double xVelocity;
+
+    /**
+     * The y-velocity in the snapshot
+     */
     double yVelocity;
+
+    /**
+     * The angular theta-velocity in the snapshot
+     */
     double thetaVelocity;
-
-    /**
-     * The sensor values during the previous process loop
-     */
-    double lastLinear;
-    double lastStrafe;
-    double lastTheta;
-
-    /**
-     * The most recent reset position
-     */
-    double resetX;
-    double resetY;
-    double resetTheta;
-
-    /**
-     * Sets a new reset position
-     */
-    void setResetPosition();
 
 public:
     /**
-     * Builder class for the position calculator
+     * Builder class for position class
      */
     class PositionBuilder
     {
     public:
         /**
-         * All attributes being used by the builder
+         * Attributes to build with
          */
-        pros::Rotation* linearTrackingSensor;
-        pros::Rotation* strafeTrackingSensor;
-        pros::Imu* inertialSensor;
-        double* linearTrackingDistance;
-        double* strafeTrackingDistance;
-        double* startX;
-        double* startY;
-        double* startTheta;
+        double* x;
+        double* y;
+        double* theta;
+        double* xVelocity;
+        double* yVelocity;
+        double* thetaVelocity;
 
         /**
-         * Default constructor for PositionBuilder
+         * Default constructor for the position builder
          */
         PositionBuilder();
 
         /**
-         * Default destructor for PositionBuilder
+         * Default destructor for the position builder
          */
         ~PositionBuilder();
 
         /**
-         * Adds a linear tracking wheel encoder to the build
-         * @param linearTrackingSensor The linear tracking wheel encoder
+         * Wither method to add an x-coordinate to the build
+         * @param x The x-coordinate being added
          * @return The builder for build chaining
          */
-        PositionBuilder* withLinearSensor(pros::Rotation* linearTrackingSensor);
+        PositionBuilder* withX(double x);
 
         /**
-         * Adds a strafe tracking wheel encoder to the build
-         * @param strafeTrackingSensor The strafe tracking wheel encoder
+         * Wither method to add an y-coordinate to the build
+         * @param y The y-coordinate being added
          * @return The builder for build chaining
          */
-        PositionBuilder* withStrafeSensor(pros::Rotation* strafeTrackingSensor);
+        PositionBuilder* withY(double y);
 
         /**
-         * Adds an inertial sensor to the build
-         * @param inertialSensor The inertial sensor
+         * Wither method to add a theta to the build
+         * @param theta The theta being added
          * @return The builder for build chaining
          */
-        PositionBuilder* withInertialSensor(pros::Imu* inertialSensor);
+        PositionBuilder* withTheta(double theta);
 
         /**
-         * Adds the distance from the linear tracking wheel to the center of the
-         * robot to the builder
-         * @param linearTrackingDistance The distance between the wheel and center
+         * Wither method to add an x-velocity to the build
+         * @param xVelocity The x-velocity being added
          * @return The builder for build chaining
          */
-        PositionBuilder* withLinearDistance(double linearTrackingDistance);
+        PositionBuilder* withXVelocity(double xVelocity);
 
         /**
-         * Adds the distance from the strafe tracking wheel to the center of the
-         * robot to the builder
-         * @param strafeTrackingDistance The distance between the wheel and center
+         * Wither method to add an y-velocity to the build
+         * @param yVelocity The y-velocity being added
          * @return The builder for build chaining
          */
-        PositionBuilder* withStrafeDistance(double strafeTrackingDistance);
+        PositionBuilder* withYVelocity(double yVelocity);
 
         /**
-         * Adds a starting x-coordinate to the builder
-         * @param startX The x-coordinate to initialize the position to
+         * Wither method to add a theta-velocity to the build
+         * @param thetaVelocity The theta-velocity being added
          * @return The builder for build chaining
          */
-        PositionBuilder* withStartX(double startX);
+        PositionBuilder* withThetaVelocity(double thetaVelocity);
 
         /**
-         * Adds a starting y-coordinate to the builder
-         * @param startY The y-coordinate to initialize the position to
-         * @return The builder for build chaining
+         * Build method for the position builder
+         * @return The position object which was built
          */
-        PositionBuilder* withStartY(double startY);
-
-        /**
-         * Adds a starting angle to the builder
-         * @param startAngle The angle to initialize the position to
-         * @return The builder for build chaining
-         */
-        PositionBuilder* withStartAngle(double startAngle);
-
-        /**
-         * Builds a Position object using the stored data
-         * @return the new Position object
-         */
-        Position* build();
+        Position build();
     };
 
     /**
-     * Builder constructor for Position
-     * @param builder The builder being used for construction
+     * Builder constructor for the Position class
      */
     Position(PositionBuilder* builder);
 
     /**
-     * Default destructor for Position
+     * Gets the x-coordinate stored in the position
+     * @return The x-coordinate
      */
-    ~Position();
+    double getX();
 
     /**
-     * Updates the position of the system
+     * Gets the y-coordinate stored in the position
+     * @return The y-coordinate
      */
-    void updatePosition();
+    double getY();
 
     /**
-     * Sets the position of the system
-     * @param x The new x-coordinate
-     * @param y The new y-coordinate
-     * @param theta The new theta
+     * Gets the theta stored in the position
+     * @return The theta
      */
-    void setPosition(double x, double y, double theta);
+    double getTheta();
 
     /**
-     * Gets the current x-coordinate of the system
-     * @return The current x-coordinate
+     * Gets the x-velocity stored in the position
+     * @return The x-velocity
      */
-    double getPositionX() const;
+    double getXVelocity();
 
     /**
-     * Gets the current y-coordinate of the system
-     * @return The current y-coordinate
+     * Gets the y-velocity stored in the position
+     * @return The y-velocity
      */
-    double getPositionY() const;
+    double getYVelocity();
 
     /**
-     * Gets the current theta of the system
-     * @return The current theta
+     * Gets the theta-velocity stored in the position
+     * @return The theta-velocity
      */
-    double getPositionTheta() const;
-
-    /**
-     * Gets the current x-velocity of the system
-     * @return the current x-velocity
-     */
-    double getVelocityX() const;
-
-    /**
-     * Gets the current y-velocity of the system
-     * @return the current y-velocity
-     */
-    double getVelocityY() const;
-    
-    /**
-     * Gets the current theta-velocity of the system
-     * @return the current theta-velocity
-     */
-    double getVelocityTheta() const;
+    double getThetaVelocity();
 };
 
 #endif

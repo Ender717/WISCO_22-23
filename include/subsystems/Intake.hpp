@@ -14,9 +14,14 @@ class Intake
 {
 private:
     /**
+     * The default intake speed
+     */
+    static constexpr double DEFAULT_SPEED = 127.0;
+
+    /**
      * The motors on the intake
      */
-    std::list<pros::Motor*>* motorList;
+    std::list<pros::Motor*> motorList;
 
     /**
      * The PID controller for the intake
@@ -26,7 +31,7 @@ private:
     /**
      * The speed of the intake
      */
-    double* intakeSpeed;
+    double speed;
 
 public:
     /**
@@ -40,6 +45,7 @@ public:
          */
         std::list<pros::Motor*>* motorList;
         PID* intakePID;
+        double* speed;
 
         /**
          * Default constructor for IntakeBuilder
@@ -56,20 +62,27 @@ public:
          * @param motor The motor being added
          * @return The builder for build chaining
          */
-        IntakeBuilder* WithMotor(pros::Motor* motor);
+        IntakeBuilder* withMotor(pros::Motor* motor);
 
         /**
          * Add a PID controller to the build
          * @param pid The PID controller being added
          * @return The builder for build chaining
          */
-        IntakeBuilder* WithPID(PID* pid);
+        IntakeBuilder* withPID(PID* pid);
+
+        /**
+         * Add an intake speed to the build
+         * @param speed The intake speed being added
+         * @return The builder for build chaining
+         */
+        IntakeBuilder* withSpeed(double speed);
 
         /**
          * Builds the intake using the stored data
          * @return The new intake
          */
-        Intake* Build();
+        Intake* build();
     };
 
     /**
@@ -86,28 +99,34 @@ public:
     /**
      * Initializes the intake
      */
-    void Initialize();
+    void initialize();
+
+    /**
+     * Sets the intake to a specified power
+     * @param power The power to set the intake to
+     */
+    void setIntake(double power);
 
     /**
      * Sets the speed of the intake
      * @param speed The new speed of the intake
      */
-    void SetSpeed(double speed);
+    void setSpeed(double speed);
 
     /**
      * Sucks the intake inward
      */
-    void Suck();
+    void suck();
 
     /**
      * Blows the intake outward
      */
-    void Blow();
+    void blow();
 
     /**
      * Stops the intake
      */
-    void Stop();
+    void stop();
 };
 
 #endif

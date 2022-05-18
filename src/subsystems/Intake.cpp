@@ -6,6 +6,7 @@ Intake::IntakeBuilder::IntakeBuilder()
 {
     motorList = nullptr;
     intakePID = nullptr;
+    speed = nullptr;
 }
 
 // Destructor definitions -----------------------------------------------------
@@ -16,11 +17,20 @@ Intake::IntakeBuilder::~IntakeBuilder()
         delete motorList;
         motorList = nullptr;
     }
-    intakePID = nullptr;
+    if (intakePID != nullptr)
+    {
+        delete intakePID;
+        intakePID = nullptr;
+    }
+    if (speed != nullptr)
+    {
+        delete speed;
+        speed = nullptr;
+    }
 }
 
 // Public method definitions --------------------------------------------------
-Intake::IntakeBuilder* Intake::IntakeBuilder::WithMotor(pros::Motor* motor)
+Intake::IntakeBuilder* Intake::IntakeBuilder::withMotor(pros::Motor* motor)
 {
     if (motorList == nullptr)
         motorList = new std::list<pros::Motor*>();
@@ -28,13 +38,19 @@ Intake::IntakeBuilder* Intake::IntakeBuilder::WithMotor(pros::Motor* motor)
     return this;
 }
 
-Intake::IntakeBuilder* Intake::IntakeBuilder::WithPID(PID* pid)
+Intake::IntakeBuilder* Intake::IntakeBuilder::withPID(PID* pid)
 {
     intakePID = pid;
     return this;
 }
 
-Intake* Intake::IntakeBuilder::Build()
+Intake::IntakeBuilder* Intake::IntakeBuilder::withSpeed(double speed)
+{
+    *this->speed = speed;
+    return this;
+}
+
+Intake* Intake::IntakeBuilder::build()
 {
     return new Intake(this);
 }
@@ -42,82 +58,83 @@ Intake* Intake::IntakeBuilder::Build()
 // Constructor definitions ----------------------------------------------------
 Intake::Intake(IntakeBuilder* builder)
 {
-    // Create the pointers
-    motorList = new std::list<pros::Motor*>();
-    intakeSpeed = new double;
-
     // Set the motors
     if (builder->motorList != nullptr)
         for (std::list<pros::Motor*>::iterator iterator = builder->motorList->begin(); 
             iterator != builder->motorList->end(); iterator++)
-            this->motorList->push_back(*iterator);
+            this->motorList.push_back(*iterator);
 
     // Set the PID controller
-    this->intakePID = builder->intakePID;
+    if (builder->intakePID != nullptr)
+        this->intakePID = new PID(*builder->intakePID);
 
     // Set the intake speed
-    *intakeSpeed = 127.0;
+    if (builder->speed != nullptr)
+        this->speed = *builder->speed;
+    else
+        this->speed = DEFAULT_SPEED;
 }
 
 // Destructor definitions -----------------------------------------------------
 Intake::~Intake()
 {
-    if (motorList != nullptr)
+
+    for (std::list<pros::Motor*>::iterator iterator = motorList.begin(); 
+        iterator != motorList.end(); iterator++)
     {
-        for (std::list<pros::Motor*>::iterator iterator = motorList->begin(); 
-            iterator != motorList->end(); iterator++)
-        {
-            delete *iterator;
-            *iterator = nullptr;
-        }
-        delete motorList;
-        motorList = nullptr;
+        delete *iterator;
+        *iterator = nullptr;
     }
     if (intakePID != nullptr)
     {
         delete intakePID;
         intakePID = nullptr;
     }
-    if (intakeSpeed != nullptr)
-    {
-        delete intakeSpeed;
-        intakeSpeed = nullptr;
-    }
 }
 
 // Public method definitions --------------------------------------------------
-void Intake::Initialize()
+void Intake::initialize()
 {
-    for (std::list<pros::Motor*>::iterator iterator = motorList->begin(); 
-        iterator != motorList->end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = motorList.begin(); 
+        iterator != motorList.end(); iterator++)
     {
         (*iterator)->tare_position();
         (*iterator)->set_brake_mode(E_MOTOR_BRAKE_BRAKE);
     }
+
+    if (intakePID != nullptr)
+        intakePID->setTargetValue(0.0);
 }
 
-void Intake::SetSpeed(double speed)
+void Intake::setIntake(double power)
 {
-    *intakeSpeed = speed;
+    for (std::list<pros::Motor*>::iterator iterator = motorList.begin(); 
+        iterator != motorList.end(); iterator++)
+        (*iterator)->move(power);
 }
 
-void Intake::Suck()
+void Intake::setSpeed(double speed)
 {
-    for (std::list<pros::Motor*>::iterator iterator = motorList->begin(); 
-        iterator != motorList->end(); iterator++)
-        (*iterator)->move(*intakeSpeed);
+    this->speed = speed;
 }
 
-void Intake::Blow()
+void Intake::suck()
 {
-    for (std::list<pros::Motor*>::iterator iterator = motorList->begin(); 
-        iterator != motorList->end(); iterator++)
-        (*iterator)->move(-*intakeSpeed);
+    for (std::list<pros::Motor*>::iterator iterator = motorList.begin(); 
+        iterator != motorList.end(); iterator++)
+        (*iterator)->move(speed);
 }
 
-void Intake::Stop()
+void Intake::blow()
 {
-    for (std::list<pros::Motor*>::iterator iterator = motorList->begin(); 
-        iterator != motorList->end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = motorList.begin(); 
+        iterator != motorList.end(); iterator++)
+        (*iterator)->move(-speed);
+}
+
+void Intake::stop()
+{
+    for (std::list<pros::Motor*>::iterator iterator = motorList.begin(); 
+        iterator != motorList.end(); iterator++)
         (*iterator)->move(0.0);
 }

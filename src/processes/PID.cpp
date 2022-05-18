@@ -54,7 +54,7 @@ PID::PIDBuilder::~PIDBuilder()
 }
 
 // Public method definitions ----------------------------------------------
-PID::PIDBuilder* PID::PIDBuilder::WithKp(double kp)
+PID::PIDBuilder* PID::PIDBuilder::withKp(double kp)
 {
     if (this->kp == nullptr)
         this->kp = new double;
@@ -62,7 +62,7 @@ PID::PIDBuilder* PID::PIDBuilder::WithKp(double kp)
     return this;
 }
 
-PID::PIDBuilder* PID::PIDBuilder::WithKi(double ki)
+PID::PIDBuilder* PID::PIDBuilder::withKi(double ki)
 {
     if (this->ki == nullptr)
         this->ki = new double;
@@ -70,7 +70,7 @@ PID::PIDBuilder* PID::PIDBuilder::WithKi(double ki)
     return this;
 }
 
-PID::PIDBuilder* PID::PIDBuilder::WithKd(double kd)
+PID::PIDBuilder* PID::PIDBuilder::withKd(double kd)
 {
     if (this->kd == nullptr)
         this->kd = new double;
@@ -78,7 +78,7 @@ PID::PIDBuilder* PID::PIDBuilder::WithKd(double kd)
     return this;
 }
 
-PID::PIDBuilder* PID::PIDBuilder::WithMin(double min)
+PID::PIDBuilder* PID::PIDBuilder::withMin(double min)
 {
     if (this->min == nullptr)
         this->min = new double;
@@ -86,7 +86,7 @@ PID::PIDBuilder* PID::PIDBuilder::WithMin(double min)
     return this;
 }
 
-PID::PIDBuilder* PID::PIDBuilder::WithMax(double max)
+PID::PIDBuilder* PID::PIDBuilder::withMax(double max)
 {
     if (this->max == nullptr)
         this->max = new double;
@@ -94,7 +94,7 @@ PID::PIDBuilder* PID::PIDBuilder::WithMax(double max)
     return this;
 }
 
-PID::PIDBuilder* PID::PIDBuilder::WithIntegralLimit(double integralLimit)
+PID::PIDBuilder* PID::PIDBuilder::withIntegralLimit(double integralLimit)
 {
     if (this->integralLimit == nullptr)
         this->integralLimit = new double;
@@ -102,7 +102,7 @@ PID::PIDBuilder* PID::PIDBuilder::WithIntegralLimit(double integralLimit)
     return this;
 }
 
-PID::PIDBuilder* PID::PIDBuilder::WithStartTarget(double startTarget)
+PID::PIDBuilder* PID::PIDBuilder::withStartTarget(double startTarget)
 {
     if (this->startTarget == nullptr)
         this->startTarget = new double;
@@ -110,7 +110,7 @@ PID::PIDBuilder* PID::PIDBuilder::WithStartTarget(double startTarget)
     return this;
 }
 
-PID* PID::PIDBuilder::Build()
+PID* PID::PIDBuilder::build()
 {
     return new PID(this);
 }
@@ -118,156 +118,103 @@ PID* PID::PIDBuilder::Build()
 // Constructor definitions ----------------------------------------------------
 PID::PID(PIDBuilder* builder)
 {
-    // Create the pointers
-    kp = new double;
-    ki = new double;
-    kd = new double;
-    min = new double;
-    max = new double;
-    integralLimit = new double;
-    targetValue = new double;
-    pastTime = new double;
-    iValue = new double;
-    pastError = new double;
-
     // Initialize builder variables
     if (builder->kp != nullptr)
-        *this->kp = *builder->kp;
+        this->kp = *builder->kp;
     else
-        *this->kp = 0.0;
+        this->kp = 0.0;
 
     if (builder->ki != nullptr)
-        *this->ki = *builder->ki;
+        this->ki = *builder->ki;
     else
-        *this->ki = 0.0;
+        this->ki = 0.0;
 
     if (builder->kd != nullptr)
-        *this->kd = *builder->kd;
+        this->kd = *builder->kd;
     else
-        *this->kd = 0.0;
+        this->kd = 0.0;
 
     if (builder->min != nullptr)
-        *this->min = *builder->min;
+        this->min = *builder->min;
     else
-        *this->min = -DBL_MAX;
+        this->min = -DBL_MAX;
 
     if (builder->max != nullptr)
-        *this->max = *builder->max;
+        this->max = *builder->max;
     else
-        *this->max = DBL_MAX;
+        this->max = DBL_MAX;
 
     if (builder->integralLimit != nullptr)
-        *this->integralLimit = *builder->integralLimit;
+        this->integralLimit = *builder->integralLimit;
     else
-        *this->integralLimit = DBL_MAX;
+        this->integralLimit = DBL_MAX;
 
     if (builder->startTarget != nullptr)
-        *this->targetValue = *builder->startTarget;
+        this->targetValue = *builder->startTarget;
     else
-        *this->targetValue = 0.0;
+        this->targetValue = 0.0;
 
     // Initialize other variables
-    *pastTime = pros::c::millis();
-    *iValue = 0.0;
-    *pastError = 0.0;
+    pastTime = pros::c::millis();
+    iValue = 0.0;
+    pastError = 0.0;
 }
 
-// Destructor definitions -------------------------------------------------
-PID::~PID()
-{
-    if (kp != nullptr)
-    {
-        delete kp;
-        kp = nullptr;
-    }
-    if (ki != nullptr)
-    {
-        delete ki;
-        ki = nullptr;
-    }
-    if (kd != nullptr)
-    {
-        delete kd;
-        kd = nullptr;
-    }
-    if (min != nullptr)
-    {
-        delete min;
-        min = nullptr;
-    }
-    if (max != nullptr)
-    {
-        delete max;
-        max = nullptr;
-    }
-    if (integralLimit != nullptr)
-    {
-        delete integralLimit;
-        integralLimit = nullptr;
-    }
-    if (targetValue != nullptr)
-    {
-        delete targetValue;
-        targetValue = nullptr;
-    }
-    if (pastTime != nullptr)
-    {
-        delete pastTime;
-        pastTime = nullptr;
-    }
-    if (iValue != nullptr)
-    {
-        delete iValue;
-        iValue = nullptr;
-    }
-    if (pastError != nullptr)
-    {
-        delete pastError;
-        pastError = nullptr;
-    }
+PID::PID(const PID& copyPID)
+{  
+    this->kp = copyPID.kp;
+    this->ki = copyPID.ki;
+    this->kd = copyPID.kd;
+    this->min = copyPID.min;
+    this->max = copyPID.max;
+    this->integralLimit = copyPID.integralLimit;
+    this->pastTime = copyPID.pastTime;
+    this->targetValue = copyPID.targetValue;
+    this->pastError = copyPID.pastError;
+    this->iValue = copyPID.iValue;
 }
 
 // Public methods -------------------------------------------------------------
-double PID::GetControlValue(double currentValue)
+double PID::getControlValue(double currentValue)
 {
     // Calculate the current error
-    double error = *targetValue - currentValue;
+    double error = targetValue - currentValue;
 
     // Calculate the loop time
     double currentTime = pros::c::millis();
-    double loopTime = (currentTime - *pastTime) / 1000;
+    double loopTime = (currentTime - pastTime) / 1000;
 
     // Set the proportional control value
     double pValue = error;
 
     // Set the integral control value
-    if (pValue > *min && pValue < *max)
-        *iValue += error * loopTime;
-    if (fabs(*iValue) > *integralLimit)
-        *iValue = (*iValue / fabs(*iValue)) * *integralLimit;
+    if (pValue > min && pValue < max)
+        iValue += error * loopTime;
+    if (fabs(iValue) > integralLimit)
+        iValue = (iValue / fabs(iValue)) * integralLimit;
 
     // Set the derivative control value
-    double dValue = (error - *pastError) / loopTime;
+    double dValue = (error - pastError) / loopTime;
 
     // Calculate the control value
-    double rawValue = (*kp * pValue) + (*ki * *iValue) + (*kd * dValue);
+    double rawValue = (kp * pValue) + (ki * iValue) + (kd * dValue);
     double satValue = rawValue;
 
     // Saturate the control value
-    if (satValue < *min)
-        satValue = *min;
-    else if (satValue > *max)
-        satValue = *max;
+    if (satValue < min)
+        satValue = min;
+    else if (satValue > max)
+        satValue = max;
 
     // Update the stored previous values
-    *pastError = error;
-    *pastTime = currentTime;
+    pastError = error;
+    pastTime = currentTime;
 
     // Return the result
     return satValue;
 }
 
-void PID::SetTargetValue(double targetValue)
+void PID::setTargetValue(double targetValue)
 {
-    *this->targetValue = targetValue;
+    this->targetValue = targetValue;
 }

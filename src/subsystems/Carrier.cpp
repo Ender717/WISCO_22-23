@@ -35,7 +35,11 @@ Carrier::CarrierBuilder::~CarrierBuilder()
         delete pistonList;
         pistonList = nullptr;
     }
-    carrierPID = nullptr;
+    if (carrierPID != nullptr)
+    {
+        delete carrierPID;
+        carrierPID = nullptr;
+    }
     if (startAngle != nullptr)
     {
         delete startAngle;
@@ -227,7 +231,8 @@ Carrier::Carrier(CarrierBuilder* builder)
             this->pistonList.push_back(*iterator);
 
     // Set the direct transfer variables
-    this->carrierPID = builder->carrierPID;
+    if (builder->carrierPID != nullptr)
+        this->carrierPID = new PID(*builder->carrierPID);
 
     if (builder->startAngle != nullptr)
         this->startAngle = *builder->startAngle;
@@ -339,7 +344,7 @@ void Carrier::initialize()
         (*iterator)->set_value(isDown);
 
     if (carrierPID != nullptr)
-        carrierPID->SetTargetValue(0.0);
+        carrierPID->setTargetValue(0.0);
 }
 
 void Carrier::setCarrier(double power)
@@ -357,7 +362,7 @@ void Carrier::raise()
         setCarrier(0.0);
 
     if (carrierPID != nullptr)
-        carrierPID->SetTargetValue(getPosition());
+        carrierPID->setTargetValue(getPosition());
 }
 
 void Carrier::lower()
@@ -368,15 +373,15 @@ void Carrier::lower()
         setCarrier(0.0);
 
     if (carrierPID != nullptr)
-        carrierPID->SetTargetValue(getPosition());
+        carrierPID->setTargetValue(getPosition());
 }
 
 void Carrier::holdPosition()
 {
-    if(!atBottom() && !atTop())
+    if(!atBottom())
     {
         if (carrierPID != nullptr)
-            setCarrier(carrierPID->GetControlValue(getPosition()));
+            setCarrier(carrierPID->getControlValue(getPosition()));
         else
             setCarrier(0.0);
     }
@@ -386,24 +391,24 @@ void Carrier::holdPosition()
 
 double Carrier::getPosition()
 {
+    double position = 0.0;
     if (!motorList.empty())
-        return motorList.front()->get_position();
-    else
-        return 0.0;
+        position = motorList.front()->get_position();
+    return position;
 }
 
 void Carrier::setAngle(double targetAngle)
 {
     double targetPosition = angleToPosition(targetAngle);
     if (carrierPID != nullptr)
-        carrierPID->SetTargetValue(targetPosition);
+        carrierPID->setTargetValue(targetPosition);
 }
 
 void Carrier::setHeight(double targetHeight)
 {
     double targetPosition = heightToPosition(targetHeight);
     if (carrierPID != nullptr)
-        carrierPID->SetTargetValue(targetPosition);
+        carrierPID->setTargetValue(targetPosition);
 }
 
 double Carrier::getAngle()
@@ -425,7 +430,7 @@ double Carrier::getHeight()
 void Carrier::setDown()
 {
     if (carrierPID != nullptr)
-        carrierPID->SetTargetValue(downPosition);
+        carrierPID->setTargetValue(downPosition);
     for (std::list<pros::ADIDigitalOut*>::iterator iterator = pistonList.begin(); 
         iterator != pistonList.end(); iterator++)
         (*iterator)->set_value(true);
@@ -435,7 +440,7 @@ void Carrier::setDown()
 void Carrier::setUp()
 {
     if (carrierPID != nullptr)
-        carrierPID->SetTargetValue(upPosition);
+        carrierPID->setTargetValue(upPosition);
     for (std::list<pros::ADIDigitalOut*>::iterator iterator = pistonList.begin(); 
         iterator != pistonList.end(); iterator++)
         (*iterator)->set_value(false);

@@ -20,46 +20,6 @@ namespace Autons
      * The number of the auton which was selected
      */
     extern int selectedAuton;
-
-    /**
-     * The programming skills routine for the blue robot
-     */
-    extern void ProgrammingSkillsBlue();
-
-    /**
-     * The programming skills routine for the orange robot
-     */
-    extern void ProgrammingSkillsOrange();
-
-    /**
-     * The left goal auton routine for the blue robot
-     */
-    extern void LeftAutonBlue();
-
-    /**
-     * The middle goal auton routine for the blue robot
-     */
-    extern void MiddleAutonBlue();
-
-    /**
-     * The right goal auton routine for the blue robot
-     */
-    extern void RightAutonBlue();
-
-    /**
-     * The left goal auton routine for the orange robot
-     */
-    extern void LeftAutonOrange();
-
-    /**
-     * The middle goal auton routine for the orange robot
-     */
-    extern void MiddleAutonOrange();
-
-    /**
-     * The right goal auton routine for the orange robot
-     */
-    extern void RightAutonOrange();
 }
 
 #endif

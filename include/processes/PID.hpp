@@ -20,40 +20,40 @@ private:
     /**
      * The control constants for the PID controller
      */
-    double* kp;
-    double* ki;
-    double* kd;
+    double kp;
+    double ki;
+    double kd;
 
     /**
      * The limiting values of the PID controller
      */
-    double* min;
-    double* max;
+    double min;
+    double max;
 
     /**
      * The limiting value of the Integral component of the controller
      */
-    double* integralLimit;
+    double integralLimit;
 
     /**
      * The previous system clock time
      */
-    double* pastTime;
+    double pastTime;
 
     /**
      * The target value of the controller
      */
-    double* targetValue;
+    double targetValue;
 
     /**
      * The error to target value of the previous control loop
      */
-    double* pastError;
+    double pastError;
 
     /**
      * The stored value of the integral controller
      */
-    double* iValue;
+    double iValue;
 
 public:
     /**
@@ -88,55 +88,55 @@ public:
          * @param kp The kp constant being added
          * @return The builder for build chaining
          */
-        PIDBuilder* WithKp(double kp);
+        PIDBuilder* withKp(double kp);
 
         /**
          * Adds a ki constant to the PIDBuilder
          * @param ki The ki constant being added
          * @return The builder for build chaining
          */
-        PIDBuilder* WithKi(double ki);
+        PIDBuilder* withKi(double ki);
 
         /**
          * Adds a kd constant to the PIDBuilder
          * @param kd The kd constant being added
          * @return The builder for build chaining
          */
-        PIDBuilder* WithKd(double kd);
+        PIDBuilder* withKd(double kd);
 
         /**
          * Adds a minimum control value to the PIDBuilder
          * @param min The minimum being added
          * @return The builder for build chaining
          */
-        PIDBuilder* WithMin(double min);
+        PIDBuilder* withMin(double min);
 
         /**
          * Adds a maximum control value to the PIDBuilder
          * @param max The maximum being added
          * @return The builder for build chaining
          */
-        PIDBuilder* WithMax(double max);
+        PIDBuilder* withMax(double max);
 
         /**
          * Adds a maximum integral controller value to the PIDBuilder
          * @param integralLimit The limiter being added
          * @return The builder for build chaining
          */
-        PIDBuilder* WithIntegralLimit(double integralLimit);
+        PIDBuilder* withIntegralLimit(double integralLimit);
 
         /**
          * Adds a starting target value to the PIDBuilder
          * @param startTarget The initial target being added
          * @return The builder for build chaining
          */
-        PIDBuilder* WithStartTarget(double startTarget);
+        PIDBuilder* withStartTarget(double startTarget);
 
         /**
          * Builds the PID controller using the PIDBuilder's stored data
          * @return The new PID controller
          */
-        PID* Build();
+        PID* build();
     };
 
     /**
@@ -146,22 +146,23 @@ public:
     PID(PIDBuilder* builder);
 
     /**
-     * Default destructor for PID
+     * Copy constructor for PID
+     * @param copyPID The PID object being copied
      */
-    ~PID();
+    PID(const PID& copyPID);
 
     /**
      * Gets the control value from the controller
      * @param currentValue The current value of the system being controlled
      * @return The control value for the system
      */
-    double GetControlValue(double currentValue);
+    double getControlValue(double currentValue);
 
     /**
      * Sets the target of the controller
      * @param targetValue The new target for the system
      */
-    void SetTargetValue(double targetValue);
+    void setTargetValue(double targetValue);
 };
 
 #endif
