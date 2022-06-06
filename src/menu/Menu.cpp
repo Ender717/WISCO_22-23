@@ -1,5 +1,5 @@
 // Included libraries
-#include "Menu.hpp"
+#include "menu/Menu.hpp"
 
 namespace Menu
 {

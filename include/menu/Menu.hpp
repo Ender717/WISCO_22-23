@@ -3,10 +3,10 @@
 #define MENU_HPP
 
 // Included libraries
-#include "robot/RobotState.hpp"
-#include "processes/Position.hpp"
-#include "autonomous/autons.hpp"
-#include "main.h"
+#include "./robot/RobotState.hpp"
+#include "./processes/Position.hpp"
+#include "./autonomous/autons.hpp"
+#include "./main.h"
 
 /**
  * This namespace manages the menu system
