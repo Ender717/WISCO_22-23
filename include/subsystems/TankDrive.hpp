@@ -13,7 +13,6 @@
 class TankDrive
 {
 private:
-    
     /**
      * The motors on the left side of the drive
      */
@@ -49,12 +48,12 @@ public:
         PID* turnPID;
 
         /**
-         * Default constructor for DriveBuilder
+         * Default constructor for TankDriveBuilder
          */
         TankDriveBuilder();
 
         /**
-         * Default destructor for DriveBuilder
+         * Default destructor for TankDriveBuilder
          */
         ~TankDriveBuilder();
 
