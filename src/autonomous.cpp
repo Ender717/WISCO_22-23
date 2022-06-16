@@ -13,6 +13,7 @@
  */
 void autonomous() 
 {
+	/*
 	AutonController::robot = RobotState::robot;
     // Run the selected auton
 	switch(Autons::selectedAuton)
@@ -21,4 +22,5 @@ void autonomous()
 			pros::screen::print(text_format_e_t::E_TEXT_LARGE, 50, 70, "No Auton Selected");
 			break;
 	}
+	*/
 }

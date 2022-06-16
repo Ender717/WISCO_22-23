@@ -8,6 +8,7 @@
  */
 void initialize() 
 {
+	/*
 	if (!pros::competition::is_connected())
 	{
 		RobotManager manager;
@@ -16,7 +17,7 @@ void initialize()
 		RobotState::robot->initialize();
 		AutonController::robot = RobotState::robot;
 	}
-	
+	*/
 }
 
 /**
@@ -40,6 +41,7 @@ void disabled()
  */
 void competition_initialize() 
 {
+	/*
 	RobotManager manager;
 
 	Menu::drawMenuSelect();
@@ -54,4 +56,5 @@ void competition_initialize()
 	RobotState::robot = manager.getRobot();
 	RobotState::robot->initialize();
 	AutonController::robot = RobotState::robot;
+	*/
 }
