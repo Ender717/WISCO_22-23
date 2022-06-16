@@ -3,55 +3,46 @@
 #define MENU_HPP
 
 // Included libraries
-#include "./robot/RobotState.hpp"
-#include "./processes/Position.hpp"
-#include "./autonomous/autons.hpp"
 #include "./main.h"
 
 /**
- * This namespace manages the menu system
+ * This namespace manages the menu system data types
  */
 namespace Menu
 {
     /**
-     * Whether an autonomous has been selected or not
+     * The driver profiles stored in the menu
      */
-    extern bool autonSelected;
+    enum class Profiles
+    {
+        HENRY,
+        JOHN,
+        NATHAN
+    };
 
     /**
-     * Whether a robot has been selected or not
+     * The robot configurations stored in the menu
      */
-    extern bool robotSelected;
+    enum class Configurations
+    {
+        MATCH_BLUE,
+        MATCH_ORANGE,
+        SKILLS_BLUE,
+        SKILLS_ORANGE
+    };
 
     /**
-     * Erases the area within the specified coordinates
-     * @param x1 The left side of the area
-     * @param y1 The top of the area
-     * @param x2 The right side of the area
-     * @param y2 The bottom of the area
+     * The autonomous routines stored in the menu
      */
-    extern void erase(int x1, int y1, int x2, int y2);
-    
-    /**
-     * Draws a selection menu
-     */
-    extern void drawMenuSelect();
-
-    /**
-     * Runs the autonomous selection process
-     */
-    extern void autonSelect();
-
-    /**
-     * Runs the robot selection process
-     */
-    extern void robotSelect();
-
-    /**
-     * Draws the current position of the robot on a 2d field
-     * @param position The position which is being drawn
-     */
-    extern void drawPosition(Position position);
+    enum class Autons
+    {
+        BLUE_LEFT,
+        BLUE_RIGHT,
+        RED_LEFT,
+        RED_RIGHT,
+        SKILLS_LEFT,
+        SKILLS_RIGHT
+    };
 }
 
 #endif
