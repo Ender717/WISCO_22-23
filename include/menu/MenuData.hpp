@@ -3,14 +3,20 @@
 #define MENU_DATA_HPP
 
 #include "Menu.hpp"
+#include <string>
+#include <fstream>
 
 /**
  * This class manages all the data stored by the menu system
  */
-
 class MenuData
 {
 private:
+    /**
+     * The name of the file being used for data storage
+     */
+    static const std::string DATA_FILE;
+
     /**
      * Whether or not the system has been initialized
      */
@@ -71,6 +77,16 @@ public:
      * Gets the selected autonomous
      */
     static Menu::Autons getAuton();
+
+    /**
+     * Reads the stored menu data from the SD card
+     */
+    static void readData();
+
+    /**
+     * Writes the stored menu data to the SD card
+     */
+    static void writeData();
 };
 
 #endif
