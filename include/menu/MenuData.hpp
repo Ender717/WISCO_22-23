@@ -5,6 +5,7 @@
 #include "Menu.hpp"
 #include <string>
 #include <fstream>
+#include "./main.h"
 
 /**
  * This class manages all the data stored by the menu system
