@@ -3,7 +3,7 @@
 #define DISPLAY_HPP
 
 #include "Menu.hpp"
-#include <string>
+#include "MainMenu.hpp"
 #include "./main.h"
 
 /**
@@ -13,27 +13,30 @@ class Display
 {
 private:
     /**
-     * The file name of the main menu background image
+     * The main menu function
      */
-    static const std::string MAIN_MENU_BACKGROUND;
+    static void mainMenu();
 
     /**
-     * The file name of the auton menu background image
+     * The auton menu function
      */
-    static const std::string AUTON_MENU_BACKGROUND;
+    static void autonMenu();
 
     /**
-     * The file name of the config menu background image
+     * The config menu function
      */
-    static const std::string CONFIG_MENU_BACKGROUND;
+    static void configMenu();
 
     /**
-     * The file name of the profile menu background image
+     * The profile menu function
      */
-    static const std::string PROFILE_MENU_BACKGROUND;
+    static void profileMenu();
 
 public:
-
+    /**
+     * Draws the selected menu
+     */
+    static void drawMenu(Menu::Menus menu);
 };
 
 #endif

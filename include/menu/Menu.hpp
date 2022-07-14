@@ -10,6 +10,16 @@
  */
 namespace Menu
 {
+    enum class Menus
+    {
+        MAIN,
+        AUTON,
+        CONFIG,
+        PROFILE
+    };
+    const std::string menuStr[] = {"MAIN", "AUTON", "CONFIG", "PROFILE"};
+    const int NUM_MENUS = 4;
+
     /**
      * The driver profiles stored in the menu
      */
