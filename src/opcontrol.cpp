@@ -1,4 +1,5 @@
 #include "opcontrol.h"
+#include "menu/Menu.hpp"
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -15,7 +16,9 @@
  */
 void opcontrol() 
 {
-    Display::drawMenu(Menu::Menus::MAIN);
+    MenuData::writeData();
+
+    MainMenu mainMenu;
 
     while(true)
     {

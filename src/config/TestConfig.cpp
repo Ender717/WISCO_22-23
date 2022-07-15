@@ -22,5 +22,5 @@ namespace TestConfig
     const int RIGHT_DRIVE_TRACKING_PORT = -1;
     const int STRAFE_DRIVE_TRACKING_PORT = -1;
     const int DRIVE_INERTIAL_PORT = 13;
-    const int TURRET_INERTIAL_PORT = 10;
+    const int TURRET_INERTIAL_PORT = 8;
 }

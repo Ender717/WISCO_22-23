@@ -5,6 +5,12 @@
 // Constant definitions -------------------------------------------------------
 const std::string MenuData::DATA_FILE = "/usd/menudata.txt";
 
+// Static member defaults -----------------------------------------------------
+bool MenuData::initialized = false;
+Menu::Autons MenuData::auton = Menu::Autons::BLUE_LEFT;
+Menu::Configurations MenuData::configuration = Menu::Configurations::MATCH_BLUE;
+Menu::Profiles MenuData::profile = Menu::Profiles::NATHAN;
+
 // Public method definitions --------------------------------------------------
 void MenuData::setInitialized(bool _initialized)
 {

@@ -3,6 +3,7 @@
 #define OPCONTROL_H
 
 #include "main.h"
-#include "menu/Display.hpp"
+#include "menu/MenuData.hpp"
+#include "menu/MainMenu.hpp"
 
 #endif
