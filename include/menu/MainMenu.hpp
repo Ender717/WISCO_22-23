@@ -6,9 +6,13 @@
 #include <string>
 #include "Menu.hpp"
 #include "MenuData.hpp"
+#include "AutonMenu.hpp"
 #include "./main.h"
 
 // Function prototypes
+void createAutonMenu();
+
+// Event handler prototypes
 static lv_res_t startButtonEvent(lv_obj_t* button);
 static lv_res_t autonButtonEvent(lv_obj_t* button);
 static lv_res_t configButtonEvent(lv_obj_t* button);
@@ -120,6 +124,16 @@ public:
      * Default constructor for the MainMenu class
      */
     MainMenu();
+
+    /**
+     * Default destructor for the MainMenu class
+     */
+    ~MainMenu();
+
+    /**
+     * Draws the menu
+     */
+    void draw();
 };
 
 #endif

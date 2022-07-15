@@ -1,4 +1,6 @@
 #include "opcontrol.h"
+#include "menu/AutonMenu.hpp"
+#include "menu/MainMenu.hpp"
 #include "menu/Menu.hpp"
 
 /**
@@ -19,6 +21,9 @@ void opcontrol()
     MenuData::writeData();
 
     MainMenu mainMenu;
+    mainMenu.draw();
+    AutonMenu autonMenu;
+    autonMenu.draw();
 
     while(true)
     {

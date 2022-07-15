@@ -3,6 +3,9 @@
 #define AUTON_MENU_HPP
 
 // Included libraries
+#include <string>
+#include "Menu.hpp"
+#include "MenuData.hpp"
 #include "./main.h"
 
 // Function prototypes
@@ -28,7 +31,7 @@ private:
     static const std::string CANCEL_BUTTON_TEXT;
 
     /**
-     * The container holding this menu
+     * The container holding the menu
      */
     lv_obj_t* container;
 
@@ -78,6 +81,11 @@ private:
     lv_obj_t* autonLabel;
 
     /**
+     * The index of the current autonomous
+     */
+    int currentAutonIndex;
+
+    /**
      * Creates the background
      */
     void createBackground();
@@ -110,9 +118,38 @@ private:
 public:
     /**
      * Constructor for AutonMenu
-     * @param container The container holding this menu
      */
-    AutonMenu(lv_obj_t* container);
+    AutonMenu();
+
+    /**
+     * Destructor for AutonMenu
+     */
+    ~AutonMenu();
+
+    /**
+     * Draws the menu
+     */
+    void draw();
+
+    /**
+     * Increments the selected auton index
+     */
+    void incrementAuton();
+
+    /**
+     * Decrements the selected auton index
+     */
+    void decrementAuton();
+
+    /**
+     * Gets the selected auton
+     */
+    Menu::Autons getSelectedAuton();
+
+    /**
+     * Gets the container holding the menu
+     */
+    lv_obj_t* getContainer();
 };
 
 #endif

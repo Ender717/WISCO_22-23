@@ -1,7 +1,6 @@
 // Defined header
 #include "menu/MainMenu.hpp"
 #include "display/lv_core/lv_obj.h"
-#include <string>
 
 // Function declarations ------------------------------------------------------
 static lv_res_t startButtonEvent(lv_obj_t* button)
@@ -14,7 +13,8 @@ static lv_res_t startButtonEvent(lv_obj_t* button)
 
 static lv_res_t autonButtonEvent(lv_obj_t* button)
 {
-    
+    AutonMenu autonMenu;
+    autonMenu.draw();
 
     return LV_RES_OK;
 }
@@ -186,6 +186,78 @@ void MainMenu::createSettingsLabel()
 
 // Constructor definitions ----------------------------------------------------
 MainMenu::MainMenu()
+{
+    startButton = nullptr;
+    startButtonLabel = nullptr;
+    autonButton = nullptr;
+    autonButtonLabel = nullptr;
+    configButton = nullptr;
+    configButtonLabel = nullptr;
+    profileButton = nullptr;
+    profileButtonLabel = nullptr;
+    settingsLabel = nullptr;
+}
+
+// Destructor definitions -----------------------------------------------------
+MainMenu::~MainMenu()
+{
+    if (startButton != nullptr)
+    {
+        delete startButton;
+        startButton = nullptr;
+    }
+
+    if (startButtonLabel != nullptr)
+    {
+        delete startButtonLabel;
+        startButtonLabel = nullptr;
+    }
+
+    if (autonButton != nullptr)
+    {
+        delete autonButton;
+        autonButton = nullptr;
+    }
+
+    if (autonButtonLabel != nullptr)
+    {
+        delete autonButtonLabel;
+        autonButtonLabel = nullptr;
+    }
+
+    if (configButton != nullptr)
+    {
+        delete configButton;
+        configButton = nullptr;
+    }
+
+    if (configButtonLabel != nullptr)
+    {
+        delete configButtonLabel;
+        configButtonLabel = nullptr;
+    }
+
+    if (profileButton != nullptr)
+    {
+        delete profileButton;
+        profileButton = nullptr;
+    }
+
+    if (profileButtonLabel != nullptr)
+    {
+        delete profileButtonLabel;
+        profileButtonLabel = nullptr;
+    }
+
+    if (settingsLabel != nullptr)
+    {
+        delete settingsLabel;
+        settingsLabel = nullptr;
+    }
+}
+
+// Public method definitions --------------------------------------------------
+void MainMenu::draw()
 {
     createBackground();
     createStartButton();
