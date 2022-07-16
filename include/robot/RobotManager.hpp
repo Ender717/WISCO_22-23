@@ -5,8 +5,10 @@
 // Included libraries
 #include "./config/BlueConfig.hpp"
 #include "./config/OrangeConfig.hpp"
+#include "./config/TestConfig.hpp"
 #include "Robot.hpp"
 #include "./main.h"
+#include "menu/Menu.hpp"
 
 /**
  * This class manages robot creation
@@ -20,14 +22,29 @@ private:
     Robot* robot;
 
     /**
-     * Creates a pre-configured blue robot
+     * Creates a pre-configured blue match robot
      */
-    void createBlueRobot();
+    void createMatchBlueRobot();
 
     /**
-     * Creates a pre-configured orange robot
+     * Creates a pre-configured orange match robot
      */
-    void createOrangeRobot();
+    void createMatchOrangeRobot();
+
+    /**
+     * Creates a pre-configured blue skills robot
+     */
+    void createSkillsBlueRobot();
+
+    /**
+     * Creates a pre-configured orange skills robot
+     */
+    void createSkillsOrangeRobot();
+
+    /**
+     * Creates a pre-configured test robot
+     */
+    void createTestRobot();
 
 public:
     /**
@@ -39,12 +56,12 @@ public:
      * Default destructor for RobotManager
      */
     ~RobotManager();
-
+    
     /**
      * Creates a robot of the specified configuration
      * @param config The configuration of robot to create
      */
-    void createRobot(RobotConfigs config);
+    void createRobot(Menu::Configurations config);
 
     /**
      * Gets the stored robot configuration

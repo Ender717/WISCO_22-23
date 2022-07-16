@@ -1,8 +1,7 @@
-// Included libraries
+// Defined header
 #include "robot/RobotState.hpp"
 
 namespace RobotState
 {
     Robot* robot = nullptr;
-    RobotConfigs* configuration = nullptr;
 }

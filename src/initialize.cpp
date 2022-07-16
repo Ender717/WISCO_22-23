@@ -8,16 +8,12 @@
  */
 void initialize() 
 {
-	/*
-	if (!pros::competition::is_connected())
-	{
-		RobotManager manager;
-		manager.createRobot(RobotConfigs::BLUE);
-		RobotState::robot = manager.getRobot();
-		RobotState::robot->initialize();
-		AutonController::robot = RobotState::robot;
-	}
-	*/
+	if (!pros::competition::is_connected() && !MenuData::isInitialized())
+		competition_initialize();
+	RobotManager robotManager;
+	robotManager.createRobot(MenuData::getConfiguration());
+	RobotState::robot = robotManager.getRobot();
+	RobotState::robot->initialize();
 }
 
 /**
@@ -41,20 +37,13 @@ void disabled()
  */
 void competition_initialize() 
 {
-	/*
-	RobotManager manager;
+	MenuData::writeData();
+    MenuScreen::initialize();
 
-	Menu::drawMenuSelect();
-	Menu::autonSelect();
-	Menu::erase(0, 0, 480, 272);
-
-	Menu::drawMenuSelect();
-	Menu::robotSelect();
-	Menu::erase(0, 0, 480, 272);
-
-	manager.createRobot(*RobotState::configuration);
-	RobotState::robot = manager.getRobot();
-	RobotState::robot->initialize();
-	AutonController::robot = RobotState::robot;
-	*/
+	while (!MenuData::isInitialized())
+	{
+		pros::delay(20);
+	}
+	pros::delay(50);
+	initialize();
 }

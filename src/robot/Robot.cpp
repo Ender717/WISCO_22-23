@@ -1,30 +1,25 @@
 // Included libraries
 #include "robot/Robot.hpp"
+#include "subsystems/HoloDrive.hpp"
 
 // ROBOTBUILDER CLASS
 
 // Constructor definitions ----------------------------------------------------
 Robot::RobotBuilder::RobotBuilder()
 {
-	configuration = nullptr;
+	holoDrive = nullptr;
 }
 
 // Destructor definitions -----------------------------------------------------
 Robot::RobotBuilder::~RobotBuilder()
 {
-	if (configuration != nullptr)
-	{
-		delete configuration;
-		configuration = nullptr;
-	}
+	holoDrive = nullptr;
 }
 
 // Public method definitions --------------------------------------------------
-Robot::RobotBuilder* Robot::RobotBuilder::withConfiguration(RobotConfigs configuration)
+Robot::RobotBuilder* Robot::RobotBuilder::withHoloDrive(HoloDrive* holoDrive)
 {
-	if (this->configuration == nullptr)
-		this->configuration = new RobotConfigs();
-	*this->configuration = configuration;
+	this->holoDrive = holoDrive;
 	return this;
 }
 
@@ -38,12 +33,17 @@ Robot* Robot::RobotBuilder::build()
 // Constructor definitions ----------------------------------------------------
 Robot::Robot(RobotBuilder* builder)
 {
-	this->configuration = *builder->configuration;
+	this->holoDrive = builder->holoDrive;
 }
 
+// Destructor definitions -----------------------------------------------------
 Robot::~Robot()
 {
-
+	if (holoDrive != nullptr)
+	{
+		delete holoDrive;
+		holoDrive = nullptr;
+	}
 }
 
 // Private method definitions -------------------------------------------------
@@ -51,10 +51,10 @@ Robot::~Robot()
 // Public method definitions --------------------------------------------------
 void Robot::initialize()
 {
-
+	holoDrive->initialize();
 }
 
-void Robot::robotControl(pros::Controller& master)
+HoloDrive* Robot::getHoloDrive()
 {
-
+	return holoDrive;
 }

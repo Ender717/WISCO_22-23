@@ -1,5 +1,6 @@
 // Included libraries
 #include "subsystems/HoloDrive.hpp"
+#include "pros/screen.h"
 
 // BUILDER CLASS --------------------------------------------------------------
 

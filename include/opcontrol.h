@@ -3,7 +3,7 @@
 #define OPCONTROL_H
 
 #include "main.h"
-#include "menu/MenuData.hpp"
-#include "menu/MenuScreen.hpp"
+#include "robot/RobotState.hpp"
+#include "control/DriveController.hpp"
 
 #endif

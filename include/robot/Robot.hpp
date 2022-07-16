@@ -3,21 +3,8 @@
 #define ROBOT_H
 
 // Included libraries
-#include "./subsystems/TankDrive.hpp"
-#include "./subsystems/Carrier.hpp"
-#include "./subsystems/Lift.hpp"
-#include "./subsystems/Claw.hpp"
-#include "./subsystems/Intake.hpp"
 #include "./main.h"
-
-/**
- * This enum manages different possible robot configurations
- */
-enum class RobotConfigs
-{
-    BLUE,
-    ORANGE
-};
+#include "./subsystems/HoloDrive.hpp"
 
 /**
  * This class manages a robot
@@ -26,9 +13,9 @@ class Robot
 {
 private:
     /**
-     * The configuration of this robot
+     * The holonomic drive for the robot
      */
-    RobotConfigs configuration;
+    HoloDrive* holoDrive;
 
 public:
     /**
@@ -38,9 +25,9 @@ public:
     {
     public:
         /**
-         * Attributes for construction
+         * Build attributes
          */
-        RobotConfigs* configuration;
+        HoloDrive* holoDrive;
 
         /**
          * Default constructor for RobotBuilder
@@ -53,11 +40,11 @@ public:
         ~RobotBuilder();
 
         /**
-         * Add a configuration to the build
-         * @param configuration The configuration being added
+         * Wither method to add a holoDrive to the build
+         * @param holoDrive the holoDrive object being added
          * @return The builder for build chaining
          */
-        RobotBuilder* withConfiguration(RobotConfigs configuration);
+        RobotBuilder* withHoloDrive(HoloDrive* holoDrive);
 
         /**
          * Builds a robot using the stored data
@@ -84,10 +71,10 @@ public:
     void initialize();
 
     /**
-     * Controls the robot using controller input
-     * @param master The controller
+     * Gets the holoDrive for this robot
+     * @return A pointer to the holo drive
      */
-    void robotControl(pros::Controller& master);
+    HoloDrive* getHoloDrive();
 };
 
 #endif
