@@ -1,7 +1,4 @@
 #include "opcontrol.h"
-#include "menu/AutonMenu.hpp"
-#include "menu/MainMenu.hpp"
-#include "menu/Menu.hpp"
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -20,10 +17,7 @@ void opcontrol()
 {
     MenuData::writeData();
 
-    MainMenu mainMenu;
-    mainMenu.draw();
-    AutonMenu autonMenu;
-    autonMenu.draw();
+    MenuScreen::initialize();
 
     while(true)
     {

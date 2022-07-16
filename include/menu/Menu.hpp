@@ -10,6 +10,9 @@
  */
 namespace Menu
 {
+    /**
+     * The possible menus
+     */
     enum class Menus
     {
         MAIN,
@@ -17,8 +20,8 @@ namespace Menu
         CONFIG,
         PROFILE
     };
-    const std::string menuStr[] = {"MAIN", "AUTON", "CONFIG", "PROFILE"};
-    const int NUM_MENUS = 4;
+    extern const char* menuStr[];
+    extern const int NUM_MENUS;
 
     /**
      * The driver profiles stored in the menu
@@ -29,8 +32,8 @@ namespace Menu
         JOHN,
         NATHAN
     };
-    const std::string profileStr[] = {"HENRY", "JOHN", "NATHAN"};
-    const int NUM_PROFILES = 3;
+    extern const char* profileStr[];
+    extern const int NUM_PROFILES;
 
     /**
      * The robot configurations stored in the menu
@@ -40,10 +43,11 @@ namespace Menu
         MATCH_BLUE,
         MATCH_ORANGE,
         SKILLS_BLUE,
-        SKILLS_ORANGE
+        SKILLS_ORANGE,
+        TEST
     };
-    const std::string configurationStr[] = {"MATCH_BLUE", "MATCH_ORANGE", "SKILLS_BLUE", "SKILLS_ORANGE"};
-    const int NUM_CONFIGURATIONS = 4;
+    extern const char* configurationStr[];
+    extern const int NUM_CONFIGURATIONS;
 
     /**
      * The autonomous routines stored in the menu
@@ -57,8 +61,8 @@ namespace Menu
         SKILLS_LEFT,
         SKILLS_RIGHT
     };
-    const std::string autonStr[] = {"BLUE_LEFT", "BLUE_RIGHT", "RED_LEFT", "RED_RIGHT", "SKILLS_LEFT", "SKILLS_RIGHT"};
-    const int NUM_AUTONS = 6;
+    extern const char* autonStr[];
+    extern const int NUM_AUTONS;
 }
 
 #endif

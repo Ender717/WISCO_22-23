@@ -4,6 +4,6 @@
 
 #include "main.h"
 #include "menu/MenuData.hpp"
-#include "menu/MainMenu.hpp"
+#include "menu/MenuScreen.hpp"
 
 #endif
