@@ -15,22 +15,22 @@ private:
     /**
      * The motors on the left front wheel of the drive
      */
-    std::list<pros::Motor*> leftFrontMotorList;
+    std::list<pros::Motor*>* leftFrontMotorList;
 
     /**
      * The motors on the left rear wheel of the drive
      */
-    std::list<pros::Motor*> leftRearMotorList;
+    std::list<pros::Motor*>* leftRearMotorList;
 
     /**
      * The motors on the right front wheel of the drive
      */
-    std::list<pros::Motor*> rightFrontMotorList;
+    std::list<pros::Motor*>* rightFrontMotorList;
 
     /**
      * The motors on the right rear wheel of the drive
      */
-    std::list<pros::Motor*> rightRearMotorList;
+    std::list<pros::Motor*>* rightRearMotorList;
 
 public:
     /**
@@ -62,28 +62,28 @@ public:
          * @param motor The motor being added
          * @return The builder for build chaining
          */
-        HoloDriveBuilder* withLeftFrontMotor(pros::Motor motor);
+        HoloDriveBuilder* withLeftFrontMotor(pros::Motor* motor);
 
         /**
          * Wither method to add a motor to the left rear wheel
          * @param motor The motor being added
          * @return The builder for build chaining
          */
-        HoloDriveBuilder* withLeftRearMotor(pros::Motor motor);
+        HoloDriveBuilder* withLeftRearMotor(pros::Motor* motor);
 
         /**
          * Wither method to add a motor to the right front wheel
          * @param motor The motor being added
          * @return The builder for build chaining
          */
-        HoloDriveBuilder* withRightFrontMotor(pros::Motor motor);
+        HoloDriveBuilder* withRightFrontMotor(pros::Motor* motor);
 
         /**
          * Wither method to add a motor to the right rear wheel
          * @param motor The motor being added
          * @return The builder for build chaining
          */
-        HoloDriveBuilder* withRightRearMotor(pros::Motor motor);
+        HoloDriveBuilder* withRightRearMotor(pros::Motor* motor);
         
         /**
          * Build method to create the HoloDrive

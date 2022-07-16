@@ -51,7 +51,8 @@ Robot::~Robot()
 // Public method definitions --------------------------------------------------
 void Robot::initialize()
 {
-	holoDrive->initialize();
+	if (holoDrive != nullptr)
+		holoDrive->initialize();
 }
 
 HoloDrive* Robot::getHoloDrive()

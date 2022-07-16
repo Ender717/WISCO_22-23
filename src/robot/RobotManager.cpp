@@ -66,10 +66,10 @@ void RobotManager::createTestRobot()
     // Create the holo drive
     HoloDrive::HoloDriveBuilder* holoDriveBuilder = new HoloDrive::HoloDriveBuilder();
     HoloDrive* holoDrive = holoDriveBuilder->
-        withLeftFrontMotor(pros::Motor(TestConfig::LEFT_FRONT_DRIVE_1_PORT, E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS))->
-        withLeftRearMotor(pros::Motor(TestConfig::LEFT_REAR_DRIVE_1_PORT, E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS))->
-        withRightFrontMotor(pros::Motor(TestConfig::RIGHT_FRONT_DRIVE_1_PORT, E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS))->
-        withRightRearMotor(pros::Motor(TestConfig::RIGHT_REAR_DRIVE_1_PORT, E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS))->
+        withLeftFrontMotor(new pros::Motor(TestConfig::LEFT_FRONT_DRIVE_1_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS))->
+        withLeftRearMotor(new pros::Motor(TestConfig::LEFT_REAR_DRIVE_1_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS))->
+        withRightFrontMotor(new pros::Motor(TestConfig::RIGHT_FRONT_DRIVE_1_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS))->
+        withRightRearMotor(new pros::Motor(TestConfig::RIGHT_REAR_DRIVE_1_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS))->
         build();
     delete holoDriveBuilder;
     holoDriveBuilder = nullptr;

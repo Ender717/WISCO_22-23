@@ -15,16 +15,6 @@ class DriveController
 {
 private:
     /**
-     * The master controller
-     */
-    pros::Controller* master;
-
-    /**
-     * The partner controller
-     */
-    pros::Controller* partner;
-
-    /**
      * The robot being controlled
      */
     Robot* robot;
@@ -33,7 +23,7 @@ private:
      * Updates the controls for the holonomic drive
      * @param holoDrive The holonomic drive being controlled
      */
-    void updateHoloDrive(HoloDrive holoDrive);
+    void updateHoloDrive(HoloDrive* holoDrive, pros::Controller master);
 
 public:
     /**
@@ -50,7 +40,7 @@ public:
     /**
      * Updates the controller
      */
-    void update();
+    void update(pros::Controller master);
 };
 
 #endif

@@ -1,5 +1,5 @@
 #include "opcontrol.h"
-#include "robot/RobotManager.hpp"
+#include "pros/misc.h"
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -16,28 +16,12 @@
  */
 void opcontrol() 
 {
-    pros::screen::print(pros::E_TEXT_LARGE, 20, 100, "OPCONTROL");
+    pros::Controller master(pros::E_CONTROLLER_MASTER);
     DriveController controller(RobotState::robot);
 
     while(true)
     {
-        controller.update();
+        controller.update(master);
         pros::delay(20);
     }
-
-    /*
-    // Create the robot and controller
-    pros::Controller master(pros::E_CONTROLLER_MASTER);
-    Robot* robot = RobotState::robot;
-    AutonController::robot = RobotState::robot;
-    Menu::erase(0, 0, 480, 272);
-
-    while(true)
-    {
-        robot->robotControl(master);
-        pros::Task::delay(50);
-    }
-
-    delete robot;
-    */
 }

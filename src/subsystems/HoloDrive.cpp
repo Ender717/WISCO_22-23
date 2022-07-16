@@ -1,6 +1,5 @@
 // Included libraries
 #include "subsystems/HoloDrive.hpp"
-#include "pros/screen.h"
 
 // BUILDER CLASS --------------------------------------------------------------
 
@@ -42,39 +41,39 @@ HoloDrive::HoloDriveBuilder::~HoloDriveBuilder()
 }
 
 // Public method definitions ----------------------------------------------
-HoloDrive::HoloDriveBuilder* HoloDrive::HoloDriveBuilder::withLeftFrontMotor(pros::Motor motor)
+HoloDrive::HoloDriveBuilder* HoloDrive::HoloDriveBuilder::withLeftFrontMotor(pros::Motor* motor)
 {
     if (leftFrontMotorList == nullptr)
         leftFrontMotorList = new std::list<pros::Motor*>();
 
-    leftFrontMotorList->push_back(&motor);
+    leftFrontMotorList->push_back(motor);
     return this;
 }
 
-HoloDrive::HoloDriveBuilder* HoloDrive::HoloDriveBuilder::withLeftRearMotor(pros::Motor motor)
+HoloDrive::HoloDriveBuilder* HoloDrive::HoloDriveBuilder::withLeftRearMotor(pros::Motor* motor)
 {
     if (leftRearMotorList == nullptr)
         leftRearMotorList = new std::list<pros::Motor*>();
 
-    leftRearMotorList->push_back(&motor);
+    leftRearMotorList->push_back(motor);
     return this;
 }
 
-HoloDrive::HoloDriveBuilder* HoloDrive::HoloDriveBuilder::withRightFrontMotor(pros::Motor motor)
+HoloDrive::HoloDriveBuilder* HoloDrive::HoloDriveBuilder::withRightFrontMotor(pros::Motor* motor)
 {
     if (rightFrontMotorList == nullptr)
         rightFrontMotorList = new std::list<pros::Motor*>();
         
-    rightFrontMotorList->push_back(&motor);
+    rightFrontMotorList->push_back(motor);
     return this;
 }
 
-HoloDrive::HoloDriveBuilder* HoloDrive::HoloDriveBuilder::withRightRearMotor(pros::Motor motor)
+HoloDrive::HoloDriveBuilder* HoloDrive::HoloDriveBuilder::withRightRearMotor(pros::Motor* motor)
 {
     if (rightRearMotorList == nullptr)
         rightRearMotorList = new std::list<pros::Motor*>();
 
-    rightRearMotorList->push_back(&motor);
+    rightRearMotorList->push_back(motor);
     return this;
 }
 
@@ -88,85 +87,111 @@ HoloDrive* HoloDrive::HoloDriveBuilder::build()
 // Constructor definitions ------------------------------------------------
 HoloDrive::HoloDrive(HoloDriveBuilder* builder)
 {
+    leftFrontMotorList = new std::list<pros::Motor*>();
+    leftRearMotorList = new std::list<pros::Motor*>();
+    rightFrontMotorList = new std::list<pros::Motor*>();
+    rightRearMotorList = new std::list<pros::Motor*>();
+
     if (builder->leftFrontMotorList != nullptr)
         for (std::list<pros::Motor*>::iterator iterator = builder->leftFrontMotorList->begin(); 
             iterator != builder->leftFrontMotorList->end(); iterator++)
-            this->leftFrontMotorList.push_back(*iterator);
+            this->leftFrontMotorList->push_back(*iterator);
+            
 
     if (builder->leftRearMotorList != nullptr)
         for (std::list<pros::Motor*>::iterator iterator = builder->leftRearMotorList->begin(); 
             iterator != builder->leftRearMotorList->end(); iterator++)
-            this->leftRearMotorList.push_back(*iterator);
+            this->leftRearMotorList->push_back(*iterator);
 
     if (builder->rightFrontMotorList != nullptr)
         for (std::list<pros::Motor*>::iterator iterator = builder->rightFrontMotorList->begin(); 
             iterator != builder->rightFrontMotorList->end(); iterator++)
-            this->rightFrontMotorList.push_back(*iterator);
+            this->rightFrontMotorList->push_back(*iterator);
 
     if (builder->rightRearMotorList != nullptr)
         for (std::list<pros::Motor*>::iterator iterator = builder->rightRearMotorList->begin(); 
             iterator != builder->rightRearMotorList->end(); iterator++)
-            this->rightRearMotorList.push_back(*iterator);
+            this->rightRearMotorList->push_back(*iterator);
 }
 
 // Destructor definitions -------------------------------------------------
 HoloDrive::~HoloDrive()
 {
-    for (std::list<pros::Motor*>::iterator iterator = leftFrontMotorList.begin(); 
-        iterator != leftFrontMotorList.end(); iterator++)
+    if (leftFrontMotorList != nullptr)
     {
-        delete *iterator;
-        *iterator = nullptr;
+        for (std::list<pros::Motor*>::iterator iterator = leftFrontMotorList->begin(); 
+            iterator != leftFrontMotorList->end(); iterator++)
+        {
+            delete *iterator;
+            *iterator = nullptr;
+        }
+        delete leftFrontMotorList;
+        leftFrontMotorList = nullptr;
     }
 
-    for (std::list<pros::Motor*>::iterator iterator = leftRearMotorList.begin(); 
-        iterator != leftRearMotorList.end(); iterator++)
+    if (leftRearMotorList != nullptr)
     {
-        delete *iterator;
-        *iterator = nullptr;
+        for (std::list<pros::Motor*>::iterator iterator = leftRearMotorList->begin(); 
+            iterator != leftRearMotorList->end(); iterator++)
+        {
+            delete *iterator;
+            *iterator = nullptr;
+        }
+        delete leftRearMotorList;
+        leftRearMotorList = nullptr;
     }
 
-    for (std::list<pros::Motor*>::iterator iterator = rightFrontMotorList.begin(); 
-        iterator != rightFrontMotorList.end(); iterator++)
+    if (rightFrontMotorList != nullptr)
     {
-        delete *iterator;
-        *iterator = nullptr;
+        for (std::list<pros::Motor*>::iterator iterator = rightFrontMotorList->begin(); 
+            iterator != rightFrontMotorList->end(); iterator++)
+        {
+            delete *iterator;
+            *iterator = nullptr;
+        }
+        delete rightFrontMotorList;
+        rightFrontMotorList = nullptr;
     }
 
-    for (std::list<pros::Motor*>::iterator iterator = rightRearMotorList.begin(); 
-        iterator != rightRearMotorList.end(); iterator++)
+    if (rightRearMotorList != nullptr)
     {
-        delete *iterator;
-        *iterator = nullptr;
+        for (std::list<pros::Motor*>::iterator iterator = rightRearMotorList->begin(); 
+            iterator != rightRearMotorList->end(); iterator++)
+        {
+            delete *iterator;
+            *iterator = nullptr;
+        }
+        delete rightRearMotorList;
+        rightRearMotorList = nullptr;
     }
 }
 
 // Public method definitions ----------------------------------------------
 void HoloDrive::initialize()
 {
-    for (std::list<pros::Motor*>::iterator iterator = leftFrontMotorList.begin(); 
-        iterator != leftFrontMotorList.end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = leftFrontMotorList->begin(); 
+        iterator != leftFrontMotorList->end(); iterator++)
     {
         (*iterator)->tare_position();
         (*iterator)->set_brake_mode(E_MOTOR_BRAKE_BRAKE);
     }
 
-    for (std::list<pros::Motor*>::iterator iterator = leftRearMotorList.begin(); 
-        iterator != leftRearMotorList.end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = leftRearMotorList->begin(); 
+        iterator != leftRearMotorList->end(); iterator++)
     {
         (*iterator)->tare_position();
         (*iterator)->set_brake_mode(E_MOTOR_BRAKE_BRAKE);
     }
 
-    for (std::list<pros::Motor*>::iterator iterator = rightFrontMotorList.begin(); 
-        iterator != rightFrontMotorList.end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = rightFrontMotorList->begin(); 
+        iterator != rightFrontMotorList->end(); iterator++)
     {
         (*iterator)->tare_position();
         (*iterator)->set_brake_mode(E_MOTOR_BRAKE_BRAKE);
     }
 
-    for (std::list<pros::Motor*>::iterator iterator = rightRearMotorList.begin(); 
-        iterator != rightRearMotorList.end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = rightRearMotorList->begin(); 
+        iterator != rightRearMotorList->end(); iterator++)
     {
         (*iterator)->tare_position();
         (*iterator)->set_brake_mode(E_MOTOR_BRAKE_BRAKE);
@@ -176,20 +201,20 @@ void HoloDrive::initialize()
 void HoloDrive::setDrive(double leftFrontPower, double leftRearPower, 
     double rightFrontPower, double rightRearPower)
 {
-    for (std::list<pros::Motor*>::iterator iterator = leftFrontMotorList.begin(); 
-        iterator != leftFrontMotorList.end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = leftFrontMotorList->begin(); 
+        iterator != leftFrontMotorList->end(); iterator++)
         (*iterator)->move(leftFrontPower);
     
-    for (std::list<pros::Motor*>::iterator iterator = leftRearMotorList.begin(); 
-        iterator != leftRearMotorList.end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = leftRearMotorList->begin(); 
+        iterator != leftRearMotorList->end(); iterator++)
         (*iterator)->move(leftRearPower);
 
-    for (std::list<pros::Motor*>::iterator iterator = rightFrontMotorList.begin(); 
-        iterator != rightFrontMotorList.end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = rightFrontMotorList->begin(); 
+        iterator != rightFrontMotorList->end(); iterator++)
         (*iterator)->move(rightFrontPower);
 
-    for (std::list<pros::Motor*>::iterator iterator = rightRearMotorList.begin(); 
-        iterator != rightRearMotorList.end(); iterator++)
+    for (std::list<pros::Motor*>::iterator iterator = rightRearMotorList->begin(); 
+        iterator != rightRearMotorList->end(); iterator++)
         (*iterator)->move(rightRearPower);
 }
 
