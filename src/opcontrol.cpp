@@ -1,5 +1,7 @@
 #include "opcontrol.h"
 #include "pros/misc.h"
+#include "pros/screen.h"
+#include "pros/screen.hpp"
 
 /**
  * Runs the operator control code. This function will be started in its own task

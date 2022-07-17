@@ -4,7 +4,7 @@
 // Event handler declarations -------------------------------------------------
 static lv_res_t startButtonEvent(lv_obj_t* button)
 {
-    lv_obj_del(lv_scr_act());
+    lv_obj_clean(lv_scr_act());
     MenuData::setInitialized(true);
 
     return LV_RES_INV;
