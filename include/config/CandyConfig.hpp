@@ -11,6 +11,16 @@
 namespace CandyConfig
 {
     /**
+     * The number of encoder counts for the catapult per cycle
+     */
+    extern const double CATAPULT_COUNTS_PER_CYCLE;
+
+    /**
+     * The position of the catapult when loaded
+     */
+    extern const double CATAPULT_LOADED_POSITION;
+    
+    /**
      * The ports for the left drive motors
      */
     extern const int LEFT_DRIVE_1_PORT;

@@ -14,7 +14,7 @@ namespace TestConfig
     const int LEFT_REAR_DRIVE_1_PORT = 20;
     const int RIGHT_FRONT_DRIVE_1_PORT = 12;
     const int RIGHT_REAR_DRIVE_1_PORT = 11;
-    const int TURRET_1_PORT = 14;
+    const int TURRET_1_PORT = 18;
 
     // Sensor ports
     const int VISION_PORT = 9;

@@ -8,6 +8,7 @@ Robot::RobotBuilder::RobotBuilder()
 {
 	tankDrive = nullptr;
 	holoDrive = nullptr;
+	catapult = nullptr;
 }
 
 // Destructor definitions -----------------------------------------------------
@@ -15,6 +16,7 @@ Robot::RobotBuilder::~RobotBuilder()
 {
 	tankDrive = nullptr;
 	holoDrive = nullptr;
+	catapult = nullptr;
 }
 
 // Public method definitions --------------------------------------------------
@@ -30,6 +32,12 @@ Robot::RobotBuilder* Robot::RobotBuilder::withHoloDrive(HoloDrive* holoDrive)
 	return this;
 }
 
+Robot::RobotBuilder* Robot::RobotBuilder::withCatapult(Catapult* catapult)
+{
+	this->catapult = catapult;
+	return this;
+}
+
 Robot* Robot::RobotBuilder::build()
 {
 	return new Robot(this);
@@ -42,6 +50,7 @@ Robot::Robot(RobotBuilder* builder)
 {
 	this->tankDrive = builder->tankDrive;
 	this->holoDrive = builder->holoDrive;
+	this->catapult = builder->catapult;
 }
 
 // Destructor definitions -----------------------------------------------------
@@ -58,6 +67,12 @@ Robot::~Robot()
 		delete holoDrive;
 		holoDrive = nullptr;
 	}
+
+	if (catapult != nullptr)
+	{
+		delete catapult;
+		catapult = nullptr;
+	}
 }
 
 // Private method definitions -------------------------------------------------
@@ -69,6 +84,8 @@ void Robot::initialize()
 		tankDrive->initialize();
 	if (holoDrive != nullptr)
 		holoDrive->initialize();
+	if (catapult != nullptr)
+		catapult->initialize();
 }
 
 TankDrive* Robot::getTankDrive()
@@ -79,4 +96,9 @@ TankDrive* Robot::getTankDrive()
 HoloDrive* Robot::getHoloDrive()
 {
 	return holoDrive;
+}
+
+Catapult* Robot::getCatapult()
+{
+	return catapult;
 }

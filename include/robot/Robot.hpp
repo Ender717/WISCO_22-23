@@ -6,6 +6,7 @@
 #include "./main.h"
 #include "./subsystems/HoloDrive.hpp"
 #include "./subsystems/TankDrive.hpp"
+#include "./subsystems/Catapult.hpp"
 
 /**
  * This class manages a robot
@@ -23,6 +24,11 @@ private:
      */
     HoloDrive* holoDrive;
 
+    /**
+     * The catapult for the robot
+     */
+    Catapult* catapult;
+
 public:
     /**
      * Builder class for Robot
@@ -35,6 +41,7 @@ public:
          */
         TankDrive* tankDrive;
         HoloDrive* holoDrive;
+        Catapult* catapult;
 
         /**
          * Default constructor for RobotBuilder
@@ -59,6 +66,13 @@ public:
          * @return The builder for build chaining
          */
         RobotBuilder* withHoloDrive(HoloDrive* holoDrive);
+
+        /**
+         * Wither method to add a catapult to the build
+         * @param catapult the catapult object being added
+         * @return The builder for build chaining
+         */
+        RobotBuilder* withCatapult(Catapult* catapult);
 
         /**
          * Builds a robot using the stored data
@@ -95,6 +109,12 @@ public:
      * @return A pointer to the holo drive
      */
     HoloDrive* getHoloDrive();
+
+    /**
+     * Gets the catapult for this robot
+     * @return A pointer to the catapult
+     */
+    Catapult* getCatapult();
 };
 
 #endif

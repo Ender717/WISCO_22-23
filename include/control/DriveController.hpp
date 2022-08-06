@@ -31,6 +31,12 @@ private:
      */
     void updateHoloDrive(HoloDrive* holoDrive, pros::Controller master);
 
+    /**
+     * Updates the controls for the catapult
+     * @param holoDrive The catapult being controlled
+     */
+    void updateCatapult(Catapult* catapult, pros::Controller master);
+
 public:
     /**
      * Parameterized constructor for a drive controller

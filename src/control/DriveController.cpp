@@ -1,5 +1,8 @@
 // Defined header
 #include "control/DriveController.hpp"
+#include "pros/misc.h"
+#include "pros/screen.h"
+#include "subsystems/Catapult.hpp"
 
 // Constructor definitions ----------------------------------------------------
 DriveController::DriveController(Robot* robot)
@@ -95,6 +98,38 @@ void DriveController::updateHoloDrive(HoloDrive* holoDrive, pros::Controller mas
     holoDrive->setDrive(leftFrontPower, leftRearPower, rightFrontPower, rightRearPower);
 }
 
+void DriveController::updateCatapult(Catapult* catapult, pros::Controller master)
+{
+    // Create the control variables
+    double leftPower = 0.0;
+    double rightPower = 0.0;
+
+    // Update the catapult loading
+    switch (MenuData::getProfile())
+    {
+        case Menu::Profiles::HENRY:
+            if (catapult->isLoaded() && master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
+                catapult->load();
+            break;
+        case Menu::Profiles::JOHN:
+            if (catapult->isLoaded() && master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
+                catapult->load();
+            break;
+        case Menu::Profiles::NATHAN:
+            if (catapult->isLoaded() && master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
+                catapult->load();
+            break;
+    }
+
+    // Hold the target position
+    catapult->holdPosition();
+    if (catapult->isLoaded())
+        pros::screen::print(pros::E_TEXT_LARGE, 30, 50, "Loaded");
+    else
+        pros::screen::print(pros::E_TEXT_LARGE, 30, 50, "Not Loaded");
+    pros::screen::print(pros::E_TEXT_LARGE, 30, 100, "Current position: %.2f", catapult->getPosition());
+}
+
 // Public method definitions
 void DriveController::update(pros::Controller master)
 {
@@ -107,4 +142,9 @@ void DriveController::update(pros::Controller master)
     HoloDrive* holoDrive = robot->getHoloDrive();
     if (holoDrive != nullptr)
         updateHoloDrive(holoDrive, master);
+
+    // Update the catapult
+    Catapult* catapult = robot->getCatapult();
+    if (catapult != nullptr)
+        updateCatapult(catapult, master);
 }
