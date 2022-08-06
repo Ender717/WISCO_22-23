@@ -9,8 +9,8 @@ namespace Menu
     const char* profileStr[] = {"HENRY", "JOHN", "NATHAN"};
     const int NUM_PROFILES = 3;
 
-    const char* configurationStr[] = {"MATCH_BLUE", "MATCH_ORANGE", "SKILLS_BLUE", "SKILLS_ORANGE", "TEST"};
-    const int NUM_CONFIGURATIONS = 5;
+    const char* configurationStr[] = {"MATCH_BLUE", "MATCH_ORANGE", "SKILLS_BLUE", "SKILLS_ORANGE", "TEST", "CANDY"};
+    const int NUM_CONFIGURATIONS = 6;
 
     const char* autonStr[] = {"BLUE_LEFT", "BLUE_RIGHT", "RED_LEFT", "RED_RIGHT", "SKILLS_LEFT", "SKILLS_RIGHT"};
     const int NUM_AUTONS = 6;

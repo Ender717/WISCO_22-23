@@ -1,5 +1,6 @@
 // Included libraries
 #include "robot/RobotManager.hpp"
+#include "menu/Menu.hpp"
 
 // Constructor definitions -----------------------------------------------------
 RobotManager::RobotManager()
@@ -83,6 +84,35 @@ void RobotManager::createTestRobot()
     robotBuilder = nullptr;
 }
 
+void RobotManager::createCandyRobot()
+{
+    // Reset the robot
+    if (robot != nullptr)
+    {
+        delete robot;
+        robot = nullptr;
+    }
+
+    // Create the tank drive
+    TankDrive::TankDriveBuilder* tankDriveBuilder = new TankDrive::TankDriveBuilder();
+    TankDrive* tankDrive = tankDriveBuilder->
+        withLeftMotor(new pros::Motor(CandyConfig::LEFT_DRIVE_1_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS))->
+        withLeftMotor(new pros::Motor(CandyConfig::LEFT_DRIVE_2_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS))->
+        withRightMotor(new pros::Motor(CandyConfig::RIGHT_DRIVE_1_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS))->
+        withRightMotor(new pros::Motor(CandyConfig::RIGHT_DRIVE_2_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS))->
+        build();
+    delete tankDriveBuilder;
+    tankDriveBuilder = nullptr;
+
+    // Create the robot
+    Robot::RobotBuilder* robotBuilder = new Robot::RobotBuilder();
+    robot = robotBuilder->
+        withTankDrive(tankDrive)->
+        build();
+    delete robotBuilder;
+    robotBuilder = nullptr;
+}
+
 // Public method definitions --------------------------------------------------
 void RobotManager::createRobot(Menu::Configurations config)
 {
@@ -102,6 +132,9 @@ void RobotManager::createRobot(Menu::Configurations config)
             break;
         case Menu::Configurations::TEST:
             createTestRobot();
+            break;
+        case Menu::Configurations::CANDY:
+            createCandyRobot();
             break;
     }
 }

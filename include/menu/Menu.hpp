@@ -44,7 +44,8 @@ namespace Menu
         MATCH_ORANGE,
         SKILLS_BLUE,
         SKILLS_ORANGE,
-        TEST
+        TEST,
+        CANDY
     };
     extern const char* configurationStr[];
     extern const int NUM_CONFIGURATIONS;

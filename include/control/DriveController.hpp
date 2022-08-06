@@ -20,6 +20,12 @@ private:
     Robot* robot;
 
     /**
+     * Updates the controls for the tank drive
+     * @param tankDrive The tank drive being controlled
+     */
+    void updateTankDrive(TankDrive* tankDrive, pros::Controller master);
+
+    /**
      * Updates the controls for the holonomic drive
      * @param holoDrive The holonomic drive being controlled
      */

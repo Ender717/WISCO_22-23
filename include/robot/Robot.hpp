@@ -5,6 +5,7 @@
 // Included libraries
 #include "./main.h"
 #include "./subsystems/HoloDrive.hpp"
+#include "./subsystems/TankDrive.hpp"
 
 /**
  * This class manages a robot
@@ -12,6 +13,11 @@
 class Robot
 {
 private:
+    /**
+     * The tank drive for the robot
+     */
+    TankDrive* tankDrive;
+
     /**
      * The holonomic drive for the robot
      */
@@ -27,6 +33,7 @@ public:
         /**
          * Build attributes
          */
+        TankDrive* tankDrive;
         HoloDrive* holoDrive;
 
         /**
@@ -38,6 +45,13 @@ public:
          * Default destructor for RobotBuilder
          */
         ~RobotBuilder();
+
+        /**
+         * Wither method to add a tankDrive to the build
+         * @param tankDrive the tankDrive object being added
+         * @return The builder for build chaining
+         */
+        RobotBuilder* withTankDrive(TankDrive* tankDrive);
 
         /**
          * Wither method to add a holoDrive to the build
@@ -69,6 +83,12 @@ public:
      * Initializes the robot
      */
     void initialize();
+
+    /**
+     * Gets the tankDrive for this robot
+     * @return A pointer to the tank drive
+     */
+    TankDrive* getTankDrive();
 
     /**
      * Gets the holoDrive for this robot

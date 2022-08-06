@@ -6,6 +6,7 @@
 #include "./config/BlueConfig.hpp"
 #include "./config/OrangeConfig.hpp"
 #include "./config/TestConfig.hpp"
+#include "./config/CandyConfig.hpp"
 #include "Robot.hpp"
 #include "./main.h"
 #include "menu/Menu.hpp"
@@ -45,6 +46,11 @@ private:
      * Creates a pre-configured test robot
      */
     void createTestRobot();
+
+    /**
+     * Creates a pre=configured candy robot
+     */
+    void createCandyRobot();
 
 public:
     /**
