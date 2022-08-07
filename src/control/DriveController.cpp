@@ -25,19 +25,19 @@ void DriveController::updateTankDrive(TankDrive* tankDrive, pros::Controller mas
     switch (MenuData::getProfile())
     {
         case Menu::Profiles::HENRY:
-            leftPower = (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) +
+            leftPower = (-master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) +
                 master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
-            rightPower = (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) -
+            rightPower = (-master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) -
                 master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
             break;
         case Menu::Profiles::JOHN:
-            leftPower = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-            rightPower = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+            leftPower = -master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+            rightPower = -master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
             break;
         case Menu::Profiles::NATHAN:
-            leftPower = (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) +
+            leftPower = (-master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) +
                 master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
-            rightPower = (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) -
+            rightPower = (-master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) -
                 master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
             break;
     }
@@ -122,12 +122,13 @@ void DriveController::updateCatapult(Catapult* catapult, pros::Controller master
     }
 
     // Hold the target position
-    catapult->holdPosition();
-    if (catapult->isLoaded())
-        pros::screen::print(pros::E_TEXT_LARGE, 30, 50, "Loaded");
+    //catapult->holdPosition();
+
+    // Pull back until loaded
+    if (!catapult->isLoaded())
+        catapult->setCatapult(127.0);
     else
-        pros::screen::print(pros::E_TEXT_LARGE, 30, 50, "Not Loaded");
-    pros::screen::print(pros::E_TEXT_LARGE, 30, 100, "Current position: %.2f", catapult->getPosition());
+        catapult->setCatapult(0.0);
 }
 
 // Public method definitions

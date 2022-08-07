@@ -42,6 +42,11 @@ private:
     PID* catapultPID;
 
     /**
+     * Whether the catapult is loaded or not
+     */
+    bool loaded;
+
+    /**
      * The current position of the catapult
      */
     double currentPosition;

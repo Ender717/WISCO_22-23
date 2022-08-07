@@ -160,6 +160,7 @@ void Catapult::setCatapult(double power)
 
 void Catapult::load()
 {
+    loaded = false;
     currentPosition += countsPerCycle;
     if (catapultPID != nullptr)
         catapultPID->setTargetValue(currentPosition);
@@ -169,7 +170,7 @@ void Catapult::holdPosition()
 {
     if(motorList != nullptr)
     {
-        if (catapultPID != nullptr)
+        if (catapultPID != nullptr && !isLoaded())
             setCatapult(catapultPID->getControlValue(getPosition()));
         else
             setCatapult(0.0);
@@ -187,5 +188,7 @@ double Catapult::getPosition()
 
 bool Catapult::isLoaded()
 {
-    return (std::abs(getPosition() - currentPosition) < LOAD_ERROR_MARGIN);
+    if (getPosition() >= currentPosition)
+        loaded = true;
+    return loaded;
 }
