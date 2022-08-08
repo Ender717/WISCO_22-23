@@ -266,11 +266,11 @@ void PositionSystem::setPosition(double x, double y, double theta)
     database.stopWriting();
 }
 
-Position PositionSystem::getPosition()
+Position* PositionSystem::getPosition()
 {
     database.startReading();
     Position::PositionBuilder* builder = new Position::PositionBuilder();
-    Position position = builder->
+    Position* position = builder->
         withX(currentX)->
         withY(currentY)->
         withTheta(currentTheta)->

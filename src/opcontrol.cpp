@@ -20,6 +20,7 @@ void opcontrol()
 {
     pros::Controller master(pros::E_CONTROLLER_MASTER);
     DriveController controller(RobotState::robot);
+    controller.initialize();
 
     while(true)
     {

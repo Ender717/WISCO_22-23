@@ -1,8 +1,31 @@
 // Defined header
 #include "control/DriveController.hpp"
-#include "pros/misc.h"
-#include "pros/screen.h"
-#include "subsystems/Catapult.hpp"
+
+// Function declarations
+void positionUpdateFunction(void *parameters)
+{
+    PositionSystem* positionSystem = (PositionSystem*)parameters;
+    while(true)
+    {
+        positionSystem->updatePosition();
+        pros::Task::delay(50);
+    }
+}
+
+void positionPrintFunction(void *parameters)
+{
+    PositionSystem* positionSystem = (PositionSystem*)parameters;
+    while(true)
+    {
+        Position* position = positionSystem->getPosition();
+        pros::screen::print(pros::E_TEXT_LARGE, 20, 10, "X: %.2f", position->getX());
+        pros::screen::print(pros::E_TEXT_LARGE, 20, 50, "Y: %.2f", position->getY());
+        pros::screen::print(pros::E_TEXT_LARGE, 20, 90, "Theta: %.2f", position->getTheta() * 180.0 / 3.1415);
+        delete position;
+        position = nullptr;
+        pros::Task::delay(50);
+    }
+}
 
 // Constructor definitions ----------------------------------------------------
 DriveController::DriveController(Robot* robot)
@@ -132,19 +155,22 @@ void DriveController::updateCatapult(Catapult* catapult, pros::Controller master
 }
 
 // Public method definitions
-void DriveController::update(pros::Controller master)
+
+void DriveController::initialize()
 {
-    // Update the position system
+    // Initialize the position system
     PositionSystem* positionSystem = robot->getPositionSystem();
     if (positionSystem != nullptr)
     {
-        positionSystem->updatePosition();
-        Position position = positionSystem->getPosition();
-        pros::screen::print(pros::E_TEXT_LARGE, 20, 10, "X: %.2f", position.getX());
-        pros::screen::print(pros::E_TEXT_LARGE, 20, 50, "Y: %.2f", position.getY());
-        pros::screen::print(pros::E_TEXT_LARGE, 20, 90, "Theta: %.2f", position.getTheta() * 180.0 / 3.1415);
+        void* parameters = (void*)positionSystem;
+        pros::Task positionUpdateTask(positionUpdateFunction, parameters, "positionUpdateTask");
+        parameters = (void*)positionSystem;
+        pros::Task positionPrintTask(positionPrintFunction, parameters, "positionPrintTask");
     }
+}
 
+void DriveController::update(pros::Controller master)
+{
     // Update the tank drive
     TankDrive* tankDrive = robot->getTankDrive();
     if (tankDrive != nullptr)

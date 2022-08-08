@@ -95,12 +95,22 @@ Position::PositionBuilder* Position::PositionBuilder::withThetaVelocity(double t
     return this;
 }
 
-Position Position::PositionBuilder::build()
+Position* Position::PositionBuilder::build()
 {
-    return Position(this);
+    return new Position(this);
 }
 
 // Constructor definitions
+Position::Position()
+{
+    x = 0.0;
+    y = 0.0;
+    theta = 0.0;
+    xVelocity = 0.0;
+    yVelocity = 0.0;
+    thetaVelocity = 0.0;
+}
+
 Position::Position(PositionBuilder* builder)
 {
     if (builder->x != nullptr)

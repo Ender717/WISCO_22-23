@@ -203,7 +203,7 @@ public:
      * Gets the current position of the system
      * @return The current position
      */
-    Position getPosition();
+    Position* getPosition();
 };
 
 #endif

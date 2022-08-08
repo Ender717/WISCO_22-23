@@ -7,6 +7,10 @@
 #include "./robot/Robot.hpp"
 #include "./menu/MenuData.hpp"
 
+// Function prototypes
+void positionUpdateFunction(void* parameters);
+void positionPrintFunction(void* parameters);
+
 /**
  * This class manages subsystem control for the robot
  * @author Nathan Sandvig
@@ -48,6 +52,11 @@ public:
      * Default destructor for the drive controller
      */
     ~DriveController();
+
+    /**
+     * Initializes the controller
+     */
+    void initialize();
 
     /**
      * Updates the controller

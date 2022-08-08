@@ -111,8 +111,13 @@ public:
          * Build method for the position builder
          * @return The position object which was built
          */
-        Position build();
+        Position* build();
     };
+
+    /**
+     * Default constructor for variable creation
+     */
+    Position();
 
     /**
      * Builder constructor for the Position class
