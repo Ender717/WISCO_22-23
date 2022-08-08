@@ -72,11 +72,15 @@ void RobotManager::createTestRobot()
     // Create the position system
     PositionSystem::PositionSystemBuilder* positionSystemBuilder = new PositionSystem::PositionSystemBuilder();
     PositionSystem* positionSystem = positionSystemBuilder->
-        withInertialSensor(new pros::Imu(TestConfig::DRIVE_INERTIAL_PORT))->
+        withWheelSize(TestConfig::DRIVE_TRACKING_WHEEL_SIZE)->
         withLinearSensor(new pros::Rotation(TestConfig::LINEAR_DRIVE_TRACKING_PORT))->
+        withLinearTrackingMultiplier(TestConfig::DRIVE_LINEAR_TRACKING_MULTIPLIER)->
         withLinearDistance(TestConfig::DRIVE_LINEAR_TRACKING_DISTANCE)->
         withStrafeSensor(new pros::Rotation(TestConfig::STRAFE_DRIVE_TRACKING_PORT))->
+        withStrafeTrackingMultiplier(TestConfig::DRIVE_STRAFE_TRACKING_MULTIPLIER)->
         withStrafeDistance(TestConfig::DRIVE_STRAFE_TRACKING_DISTANCE)->
+        withInertialSensor(new pros::Imu(TestConfig::DRIVE_INERTIAL_PORT))->
+        withInertialMultiplier(TestConfig::DRIVE_INERTIAL_MULTIPLIER)->
         build();
     delete positionSystemBuilder;
     positionSystemBuilder = nullptr;

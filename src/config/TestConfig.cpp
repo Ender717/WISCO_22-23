@@ -4,6 +4,9 @@ namespace TestConfig
 {
     // Constants
     const double DRIVE_TRACKING_WHEEL_SIZE = 2.75;
+    const double DRIVE_LINEAR_TRACKING_MULTIPLIER = 1.0105;
+    const double DRIVE_STRAFE_TRACKING_MULTIPLIER = 1.0105;
+    const double DRIVE_INERTIAL_MULTIPLIER = 0.9909;
     const double DRIVE_LINEAR_TRACKING_DISTANCE = 7.75;
     const double DRIVE_STRAFE_TRACKING_DISTANCE = -7.75;
     const double DRIVE_COUNTS_PER_ROTATION = 36000;

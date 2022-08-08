@@ -16,6 +16,13 @@ namespace TestConfig
     extern const double DRIVE_TRACKING_WHEEL_SIZE;
 
     /**
+     * The tuning multipliers for the position tracking sensors
+     */
+    extern const double DRIVE_LINEAR_TRACKING_MULTIPLIER;
+    extern const double DRIVE_STRAFE_TRACKING_MULTIPLIER;
+    extern const double DRIVE_INERTIAL_MULTIPLIER;
+
+    /**
      * The distances between the drive tracking wheels and the center of the drive
      */
     extern const double DRIVE_LINEAR_TRACKING_DISTANCE;
