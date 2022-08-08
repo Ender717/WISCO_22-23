@@ -4,9 +4,8 @@ namespace TestConfig
 {
     // Constants
     const double DRIVE_TRACKING_WHEEL_SIZE = 2.75;
-    const double DRIVE_LEFT_TRACKING_DISTANCE = 0.0;
-    const double DRIVE_RIGHT_TRACKING_DISTANCE = 0.0;
-    const double DRIVE_STRAFE_TRACKING_DISTANCE = 0.0;
+    const double DRIVE_LINEAR_TRACKING_DISTANCE = 7.75;
+    const double DRIVE_STRAFE_TRACKING_DISTANCE = -7.75;
     const double DRIVE_COUNTS_PER_ROTATION = 36000;
 
     // Motor ports
@@ -17,10 +16,9 @@ namespace TestConfig
     const int TURRET_1_PORT = 18;
 
     // Sensor ports
-    const int VISION_PORT = 9;
-    const int LEFT_DRIVE_TRACKING_PORT = -1;
-    const int RIGHT_DRIVE_TRACKING_PORT = -1;
-    const int STRAFE_DRIVE_TRACKING_PORT = -1;
+    const int VISION_PORT = -1;
+    const int LINEAR_DRIVE_TRACKING_PORT = 16;
+    const int STRAFE_DRIVE_TRACKING_PORT = 17;
     const int DRIVE_INERTIAL_PORT = 13;
-    const int TURRET_INERTIAL_PORT = 8;
+    const int TURRET_INERTIAL_PORT = -1;
 }

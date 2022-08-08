@@ -198,6 +198,7 @@ void PositionSystem::initialize()
 {
     // Initialize the tracking wheels
     linearTrackingSensor->set_position(0.0);
+    linearTrackingSensor->set_reversed(true);
     strafeTrackingSensor->set_position(0.0);
 
     // Initialize the inertial sensor
@@ -218,7 +219,7 @@ void PositionSystem::updatePosition()
     double strafeDistance = countsToInches(strafeTrackingSensor->get_position()) - lastStrafe;
 
     // Calculate the change in theta
-    currentTheta = inertialSensor->get_rotation() + resetTheta;
+    currentTheta = -(inertialSensor->get_rotation() * 3.1415 / 180.0) + resetTheta;
     thetaVelocity = currentTheta - lastTheta;
 
     // Calculate the local offset

@@ -1,11 +1,13 @@
 // Included libraries
 #include "robot/Robot.hpp"
+#include "processes/PositionSystem.hpp"
 
 // ROBOTBUILDER CLASS
 
 // Constructor definitions ----------------------------------------------------
 Robot::RobotBuilder::RobotBuilder()
 {
+	positionSystem = nullptr;
 	tankDrive = nullptr;
 	holoDrive = nullptr;
 	catapult = nullptr;
@@ -14,12 +16,19 @@ Robot::RobotBuilder::RobotBuilder()
 // Destructor definitions -----------------------------------------------------
 Robot::RobotBuilder::~RobotBuilder()
 {
+	positionSystem = nullptr;
 	tankDrive = nullptr;
 	holoDrive = nullptr;
 	catapult = nullptr;
 }
 
 // Public method definitions --------------------------------------------------
+Robot::RobotBuilder* Robot::RobotBuilder::withPositionSystem(PositionSystem* positionSystem)
+{
+	this->positionSystem = positionSystem;
+	return this;
+}
+
 Robot::RobotBuilder* Robot::RobotBuilder::withTankDrive(TankDrive* tankDrive)
 {
 	this->tankDrive = tankDrive;
@@ -48,6 +57,7 @@ Robot* Robot::RobotBuilder::build()
 // Constructor definitions ----------------------------------------------------
 Robot::Robot(RobotBuilder* builder)
 {
+	this->positionSystem = builder->positionSystem;
 	this->tankDrive = builder->tankDrive;
 	this->holoDrive = builder->holoDrive;
 	this->catapult = builder->catapult;
@@ -56,6 +66,12 @@ Robot::Robot(RobotBuilder* builder)
 // Destructor definitions -----------------------------------------------------
 Robot::~Robot()
 {
+	if (positionSystem != nullptr)
+	{
+		delete positionSystem;
+		positionSystem = nullptr;
+	}
+
 	if (tankDrive != nullptr)
 	{
 		delete tankDrive;
@@ -80,12 +96,19 @@ Robot::~Robot()
 // Public method definitions --------------------------------------------------
 void Robot::initialize()
 {
+	if (positionSystem != nullptr)
+		positionSystem->initialize();
 	if (tankDrive != nullptr)
 		tankDrive->initialize();
 	if (holoDrive != nullptr)
 		holoDrive->initialize();
 	if (catapult != nullptr)
 		catapult->initialize();
+}
+
+PositionSystem* Robot::getPositionSystem()
+{
+	return positionSystem;
 }
 
 TankDrive* Robot::getTankDrive()

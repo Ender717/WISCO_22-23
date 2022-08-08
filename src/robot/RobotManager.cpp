@@ -1,7 +1,10 @@
 // Included libraries
 #include "robot/RobotManager.hpp"
 #include "config/CandyConfig.hpp"
+#include "config/TestConfig.hpp"
 #include "menu/Menu.hpp"
+#include "processes/PositionSystem.hpp"
+#include "pros/rotation.hpp"
 
 // Constructor definitions -----------------------------------------------------
 RobotManager::RobotManager()
@@ -65,6 +68,18 @@ void RobotManager::createTestRobot()
         robot = nullptr;
     }
 
+    // Create the position system
+    PositionSystem::PositionSystemBuilder* positionSystemBuilder = new PositionSystem::PositionSystemBuilder();
+    PositionSystem* positionSystem = positionSystemBuilder->
+        withInertialSensor(new pros::Imu(TestConfig::DRIVE_INERTIAL_PORT))->
+        withLinearSensor(new pros::Rotation(TestConfig::LINEAR_DRIVE_TRACKING_PORT))->
+        withLinearDistance(TestConfig::DRIVE_LINEAR_TRACKING_DISTANCE)->
+        withStrafeSensor(new pros::Rotation(TestConfig::STRAFE_DRIVE_TRACKING_PORT))->
+        withStrafeDistance(TestConfig::DRIVE_STRAFE_TRACKING_DISTANCE)->
+        build();
+    delete positionSystemBuilder;
+    positionSystemBuilder = nullptr;
+
     // Create the holo drive
     HoloDrive::HoloDriveBuilder* holoDriveBuilder = new HoloDrive::HoloDriveBuilder();
     HoloDrive* holoDrive = holoDriveBuilder->
@@ -79,6 +94,7 @@ void RobotManager::createTestRobot()
     // Create the robot
     Robot::RobotBuilder* robotBuilder = new Robot::RobotBuilder();
     robot = robotBuilder->
+        withPositionSystem(positionSystem)->
         withHoloDrive(holoDrive)->
         build();
     delete robotBuilder;

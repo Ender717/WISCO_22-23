@@ -18,8 +18,7 @@ namespace TestConfig
     /**
      * The distances between the drive tracking wheels and the center of the drive
      */
-    extern const double DRIVE_LEFT_TRACKING_DISTANCE;
-    extern const double DRIVE_RIGHT_TRACKING_DISTANCE;
+    extern const double DRIVE_LINEAR_TRACKING_DISTANCE;
     extern const double DRIVE_STRAFE_TRACKING_DISTANCE;
 
     /**
@@ -60,8 +59,7 @@ namespace TestConfig
     /**
      * The ports for the drive tracking sensors
      */
-    extern const int LEFT_DRIVE_TRACKING_PORT;
-    extern const int RIGHT_DRIVE_TRACKING_PORT;
+    extern const int LINEAR_DRIVE_TRACKING_PORT;
     extern const int STRAFE_DRIVE_TRACKING_PORT;
 
     /**

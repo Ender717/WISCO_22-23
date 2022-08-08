@@ -4,6 +4,7 @@
 
 // Included libraries
 #include "./main.h"
+#include "./processes/PositionSystem.hpp"
 #include "./subsystems/HoloDrive.hpp"
 #include "./subsystems/TankDrive.hpp"
 #include "./subsystems/Catapult.hpp"
@@ -14,6 +15,11 @@
 class Robot
 {
 private:
+    /**
+     * The position tracking system for the robot
+     */
+    PositionSystem* positionSystem;
+
     /**
      * The tank drive for the robot
      */
@@ -39,6 +45,7 @@ public:
         /**
          * Build attributes
          */
+        PositionSystem* positionSystem;
         TankDrive* tankDrive;
         HoloDrive* holoDrive;
         Catapult* catapult;
@@ -52,6 +59,13 @@ public:
          * Default destructor for RobotBuilder
          */
         ~RobotBuilder();
+
+        /**
+         * Wither method to add a positionSystem to the build
+         * @param positionSystem the positionSystem object being added
+         * @return The builder for build chaining
+         */
+        RobotBuilder* withPositionSystem(PositionSystem* positionSystem);
 
         /**
          * Wither method to add a tankDrive to the build
@@ -97,6 +111,12 @@ public:
      * Initializes the robot
      */
     void initialize();
+
+    /**
+     * Gets the positionSystem for this robot
+     * @return A pointer to the position system
+     */
+    PositionSystem* getPositionSystem();
 
     /**
      * Gets the tankDrive for this robot
