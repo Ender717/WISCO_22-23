@@ -177,6 +177,8 @@ PID::PID(const PID& copyPID)
 // Public methods -------------------------------------------------------------
 double PID::getControlValue(double currentValue)
 {
+    mutex.take();
+
     // Calculate the current error
     double error = targetValue - currentValue;
 
@@ -210,11 +212,15 @@ double PID::getControlValue(double currentValue)
     pastError = error;
     pastTime = currentTime;
 
+    mutex.give();
+
     // Return the result
     return satValue;
 }
 
 void PID::setTargetValue(double targetValue)
 {
+    mutex.take();
     this->targetValue = targetValue;
+    mutex.give();
 }

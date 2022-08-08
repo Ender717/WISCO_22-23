@@ -25,6 +25,6 @@ void opcontrol()
     while(true)
     {
         controller.update(master);
-        pros::delay(20);
+        pros::delay(50);
     }
 }

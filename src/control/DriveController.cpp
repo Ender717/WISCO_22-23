@@ -10,7 +10,7 @@ void positionUpdateFunction(void *parameters)
     while (true)
     {
         positionSystem->updatePosition();
-        pros::Task::delay(50);
+        pros::delay(100);
     }
 }
 
@@ -25,7 +25,7 @@ void positionPrintFunction(void *parameters)
         pros::screen::print(pros::E_TEXT_LARGE, 20, 90, "Theta: %.2f", position->getTheta() * 180.0 / 3.1415);
         delete position;
         position = nullptr;
-        pros::Task::delay(50);
+        pros::delay(100);
     }
 }
 
@@ -35,7 +35,7 @@ void flywheelUpdateFunction(void* parameters)
     while (true)
     {
         flywheel->update();
-        pros::Task::delay(50);
+        pros::delay(200);
     }
 }
 
@@ -170,13 +170,13 @@ void DriveController::updateFlywheel(Flywheel* flywheel, pros::Controller master
     switch (MenuData::getProfile())
     {
         case Menu::Profiles::HENRY:
-            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 20;
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 100;
             break;
         case Menu::Profiles::JOHN:
-            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 20;
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 100;
             break;
         case Menu::Profiles::NATHAN:
-            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 20;
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 100;
             break;
     }
 

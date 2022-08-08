@@ -36,6 +36,11 @@ private:
     double countsPerRevolution;
 
     /**
+     * The maximum RPM for this flywheel
+     */
+    double maxRPM;
+
+    /**
      * The power currently being sent to the motors
      */
     double motorPower;
@@ -76,6 +81,7 @@ public:
         PID* flywheelPID;
         double* wheelSize;
         double* countsPerRevolution;
+        double* maxRPM;
 
         /**
          * Default constructor for FlywheelBuilder
@@ -114,6 +120,13 @@ public:
          * @return The builder for build chaining
          */
         FlywheelBuilder* withCountsPerRevolution(double countsPerRevolution);
+
+        /**
+         * Adds a maximum RPM to the builder data
+         * @param maxRPM The maximum RPM being added
+         * @return The builder for build chaining
+         */
+        FlywheelBuilder* withMaxRPM(double maxRPM);
 
         /**
          * Builds the Flywheel using the stored data

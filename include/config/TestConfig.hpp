@@ -37,6 +37,11 @@ namespace TestConfig
     extern const double FLYWHEEL_COUNTS_PER_REVOLUTION;
 
     /**
+     * The maximum RPM of the flywheel
+     */
+    extern const double FLYWHEEL_MAX_RPM;
+
+    /**
      * The ports for the left front drive motors
      */
     extern const int LEFT_FRONT_DRIVE_1_PORT;

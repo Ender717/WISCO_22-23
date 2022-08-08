@@ -1,5 +1,6 @@
 // Included libraries
 #include "robot/RobotManager.hpp"
+#include "config/TestConfig.hpp"
 
 // Constructor definitions -----------------------------------------------------
 RobotManager::RobotManager()
@@ -66,7 +67,7 @@ void RobotManager::createTestRobot()
     // Create the PID controllers
     PID::PIDBuilder* pidBuilder = new PID::PIDBuilder();
     PID* drivePID = pidBuilder->withKp(1.0)->withKi(0.0)->withKd(0.0)->build();
-    PID* flywheelPID = pidBuilder->withKp(1.0)->withKi(3.5)->withKd(0.001)->withMin(0.0)->build();
+    PID* flywheelPID = pidBuilder->withKp(2.5)->withKi(5.0)->withKd(0.01)->withIntegralLimit(127.0)->withMin(0.0)->build();
 
     // Create the position system
     PositionSystem::PositionSystemBuilder* positionSystemBuilder = new PositionSystem::PositionSystemBuilder();
@@ -98,6 +99,7 @@ void RobotManager::createTestRobot()
         withPID(flywheelPID)->
         withWheelSize(TestConfig::FLYWHEEL_WHEEL_SIZE)->
         withCountsPerRevolution(TestConfig::FLYWHEEL_COUNTS_PER_REVOLUTION)->
+        withMaxRPM(TestConfig::FLYWHEEL_MAX_RPM)->
         build();
     delete flywheelBuilder;
     flywheelBuilder = nullptr;

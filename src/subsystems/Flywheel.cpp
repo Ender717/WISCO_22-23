@@ -11,6 +11,7 @@ Flywheel::FlywheelBuilder::FlywheelBuilder()
     flywheelPID = nullptr;
     wheelSize = nullptr;
     countsPerRevolution = nullptr;
+    maxRPM = nullptr;
 }
 
 // Destructor definitions -----------------------------------------------------
@@ -43,6 +44,13 @@ Flywheel::FlywheelBuilder::~FlywheelBuilder()
         delete countsPerRevolution;
         countsPerRevolution = nullptr;
     }
+
+    // Delete the max RPM
+    if (maxRPM != nullptr)
+    {
+        delete maxRPM;
+        maxRPM = nullptr;
+    }
 }
 
 // Public method definitions --------------------------------------------------
@@ -73,6 +81,14 @@ Flywheel::FlywheelBuilder* Flywheel::FlywheelBuilder::withCountsPerRevolution(do
     if (this->countsPerRevolution == nullptr)
         this->countsPerRevolution = new double;
     *this->countsPerRevolution = countsPerRevolution;
+    return this;
+}
+
+Flywheel::FlywheelBuilder* Flywheel::FlywheelBuilder::withMaxRPM(double maxRPM)
+{
+    if (this->maxRPM == nullptr)
+        this->maxRPM = new double;
+    *this->maxRPM = maxRPM;
     return this;
 }
 
@@ -110,6 +126,12 @@ Flywheel::Flywheel(FlywheelBuilder* builder)
         this->countsPerRevolution = *builder->countsPerRevolution;
     else
         this->countsPerRevolution = DBL_MAX;
+
+    // Set the maximum RPM
+    if (builder->maxRPM != nullptr)
+        this->maxRPM = *builder->maxRPM;
+    else
+        this->maxRPM = DBL_MAX;
 
     motorPower = 0.0;
     lastPosition = 0.0;
@@ -188,6 +210,10 @@ void Flywheel::setFlywheel(double power)
 void Flywheel::setRPM(double RPM)
 {
     targetRPM = RPM;
+    if (targetRPM > maxRPM)
+        targetRPM = maxRPM;
+    else if (targetRPM < 0.0)
+        targetRPM = 0.0;
     if (flywheelPID != nullptr)
         flywheelPID->setTargetValue(RPM / 60.0);
 }
