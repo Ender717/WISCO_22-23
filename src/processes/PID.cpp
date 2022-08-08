@@ -182,14 +182,14 @@ double PID::getControlValue(double currentValue)
 
     // Calculate the loop time
     double currentTime = pros::c::millis();
-    double loopTime = (currentTime - pastTime) / 1000;
+    double loopTime = (currentTime - pastTime) / 1000.0;
 
     // Set the proportional control value
     double pValue = error;
 
     // Set the integral control value
-    if (pValue > min && pValue < max)
-        iValue += error * loopTime;
+    //if (pValue > min && pValue < max)
+    iValue += error * loopTime;
     if (fabs(iValue) > integralLimit)
         iValue = (iValue / fabs(iValue)) * integralLimit;
 

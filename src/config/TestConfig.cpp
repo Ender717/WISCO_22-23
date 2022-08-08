@@ -7,12 +7,15 @@ namespace TestConfig
     const double DRIVE_LINEAR_TRACKING_DISTANCE = 7.75;
     const double DRIVE_STRAFE_TRACKING_DISTANCE = -7.75;
     const double DRIVE_COUNTS_PER_ROTATION = 36000;
+    const double FLYWHEEL_WHEEL_SIZE = 3.25;
+    const double FLYWHEEL_COUNTS_PER_REVOLUTION = 42.86;
 
     // Motor ports
     const int LEFT_FRONT_DRIVE_1_PORT = 19;
     const int LEFT_REAR_DRIVE_1_PORT = 20;
     const int RIGHT_FRONT_DRIVE_1_PORT = 12;
     const int RIGHT_REAR_DRIVE_1_PORT = 11;
+    const int FLYWHEEL_1_PORT = 14;
     const int TURRET_1_PORT = 18;
 
     // Sensor ports

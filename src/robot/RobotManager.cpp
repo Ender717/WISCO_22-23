@@ -1,10 +1,5 @@
 // Included libraries
 #include "robot/RobotManager.hpp"
-#include "config/CandyConfig.hpp"
-#include "config/TestConfig.hpp"
-#include "menu/Menu.hpp"
-#include "processes/PositionSystem.hpp"
-#include "pros/rotation.hpp"
 
 // Constructor definitions -----------------------------------------------------
 RobotManager::RobotManager()
@@ -68,6 +63,11 @@ void RobotManager::createTestRobot()
         robot = nullptr;
     }
 
+    // Create the PID controllers
+    PID::PIDBuilder* pidBuilder = new PID::PIDBuilder();
+    PID* drivePID = pidBuilder->withKp(1.0)->withKi(0.0)->withKd(0.0)->build();
+    PID* flywheelPID = pidBuilder->withKp(1.0)->withKi(3.5)->withKd(0.001)->withMin(0.0)->build();
+
     // Create the position system
     PositionSystem::PositionSystemBuilder* positionSystemBuilder = new PositionSystem::PositionSystemBuilder();
     PositionSystem* positionSystem = positionSystemBuilder->
@@ -91,11 +91,23 @@ void RobotManager::createTestRobot()
     delete holoDriveBuilder;
     holoDriveBuilder = nullptr;
 
+    // Create the flywheel
+    Flywheel::FlywheelBuilder* flywheelBuilder = new Flywheel::FlywheelBuilder();
+    Flywheel* flywheel = flywheelBuilder->
+        withMotor(new pros::Motor(TestConfig::FLYWHEEL_1_PORT, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS))->
+        withPID(flywheelPID)->
+        withWheelSize(TestConfig::FLYWHEEL_WHEEL_SIZE)->
+        withCountsPerRevolution(TestConfig::FLYWHEEL_COUNTS_PER_REVOLUTION)->
+        build();
+    delete flywheelBuilder;
+    flywheelBuilder = nullptr;
+
     // Create the robot
     Robot::RobotBuilder* robotBuilder = new Robot::RobotBuilder();
     robot = robotBuilder->
         withPositionSystem(positionSystem)->
         withHoloDrive(holoDrive)->
+        withFlywheel(flywheel)->
         build();
     delete robotBuilder;
     robotBuilder = nullptr;

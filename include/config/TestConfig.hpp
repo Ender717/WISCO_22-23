@@ -27,6 +27,16 @@ namespace TestConfig
     extern const double DRIVE_COUNTS_PER_ROTATION;
 
     /**
+     * The diameter of the flywheel
+     */
+    extern const double FLYWHEEL_WHEEL_SIZE;
+
+    /**
+     * The counts per revolution of the flywheel
+     */
+    extern const double FLYWHEEL_COUNTS_PER_REVOLUTION;
+
+    /**
      * The ports for the left front drive motors
      */
     extern const int LEFT_FRONT_DRIVE_1_PORT;
@@ -45,6 +55,11 @@ namespace TestConfig
      * The ports for the right rear drive motors
      */
     extern const int RIGHT_REAR_DRIVE_1_PORT;
+
+    /**
+     * The ports for the flywheel motors
+     */
+    extern const int FLYWHEEL_1_PORT;
 
     /**
      * The ports for the turret motors

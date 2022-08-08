@@ -8,6 +8,7 @@
 #include "./subsystems/HoloDrive.hpp"
 #include "./subsystems/TankDrive.hpp"
 #include "./subsystems/Catapult.hpp"
+#include "./subsystems/Flywheel.hpp"
 
 /**
  * This class manages a robot
@@ -35,6 +36,11 @@ private:
      */
     Catapult* catapult;
 
+    /**
+     * The flywheel for the robot
+     */
+    Flywheel* flywheel;
+
 public:
     /**
      * Builder class for Robot
@@ -49,6 +55,7 @@ public:
         TankDrive* tankDrive;
         HoloDrive* holoDrive;
         Catapult* catapult;
+        Flywheel* flywheel;
 
         /**
          * Default constructor for RobotBuilder
@@ -87,6 +94,13 @@ public:
          * @return The builder for build chaining
          */
         RobotBuilder* withCatapult(Catapult* catapult);
+
+        /**
+         * Wither method to add a flywheel to the build
+         * @param flywheel the flywheel object being added
+         * @return The builder for build chaining
+         */
+        RobotBuilder* withFlywheel(Flywheel* flywheel);
 
         /**
          * Builds a robot using the stored data
@@ -135,6 +149,12 @@ public:
      * @return A pointer to the catapult
      */
     Catapult* getCatapult();
+
+    /**
+     * Gets the flywheel for this robot
+     * @return A pointer to the flywheel
+     */
+    Flywheel* getFlywheel();
 };
 
 #endif

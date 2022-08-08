@@ -1,11 +1,13 @@
 // Defined header
 #include "control/DriveController.hpp"
+#include "pros/misc.h"
+#include "pros/rtos.hpp"
 
 // Function declarations
 void positionUpdateFunction(void *parameters)
 {
     PositionSystem* positionSystem = (PositionSystem*)parameters;
-    while(true)
+    while (true)
     {
         positionSystem->updatePosition();
         pros::Task::delay(50);
@@ -15,7 +17,7 @@ void positionUpdateFunction(void *parameters)
 void positionPrintFunction(void *parameters)
 {
     PositionSystem* positionSystem = (PositionSystem*)parameters;
-    while(true)
+    while (true)
     {
         Position* position = positionSystem->getPosition();
         pros::screen::print(pros::E_TEXT_LARGE, 20, 10, "X: %.2f", position->getX());
@@ -23,6 +25,16 @@ void positionPrintFunction(void *parameters)
         pros::screen::print(pros::E_TEXT_LARGE, 20, 90, "Theta: %.2f", position->getTheta() * 180.0 / 3.1415);
         delete position;
         position = nullptr;
+        pros::Task::delay(50);
+    }
+}
+
+void flywheelUpdateFunction(void* parameters)
+{
+    Flywheel* flywheel = (Flywheel*)parameters;
+    while (true)
+    {
+        flywheel->update();
         pros::Task::delay(50);
     }
 }
@@ -123,10 +135,6 @@ void DriveController::updateHoloDrive(HoloDrive* holoDrive, pros::Controller mas
 
 void DriveController::updateCatapult(Catapult* catapult, pros::Controller master)
 {
-    // Create the control variables
-    double leftPower = 0.0;
-    double rightPower = 0.0;
-
     // Update the catapult loading
     switch (MenuData::getProfile())
     {
@@ -154,6 +162,30 @@ void DriveController::updateCatapult(Catapult* catapult, pros::Controller master
         catapult->setCatapult(0.0);
 }
 
+void DriveController::updateFlywheel(Flywheel* flywheel, pros::Controller master)
+{
+    double adjust = 0.0;
+
+    // Update the flywheel RPM
+    switch (MenuData::getProfile())
+    {
+        case Menu::Profiles::HENRY:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 20;
+            break;
+        case Menu::Profiles::JOHN:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 20;
+            break;
+        case Menu::Profiles::NATHAN:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 20;
+            break;
+    }
+
+    double targetRPM = flywheel->getTargetRPM();
+    flywheel->setRPM(targetRPM + adjust);
+    pros::screen::print(pros::E_TEXT_LARGE, 20, 130, "Current RPM: %.2f", flywheel->getRPM());
+    pros::screen::print(pros::E_TEXT_LARGE, 20, 170, "Target RPM: %.2f", flywheel->getTargetRPM());
+}
+
 // Public method definitions
 
 void DriveController::initialize()
@@ -166,6 +198,14 @@ void DriveController::initialize()
         pros::Task positionUpdateTask(positionUpdateFunction, parameters, "positionUpdateTask");
         parameters = (void*)positionSystem;
         pros::Task positionPrintTask(positionPrintFunction, parameters, "positionPrintTask");
+    }
+
+    // Initialize the flywheel
+    Flywheel* flywheel = robot->getFlywheel();
+    if (flywheel != nullptr)
+    {
+        void* parameters = (void*)flywheel;
+        pros::Task flywheelUpdateTask(flywheelUpdateFunction, parameters, "flywheelUpdateTask");
     }
 }
 
@@ -185,4 +225,9 @@ void DriveController::update(pros::Controller master)
     Catapult* catapult = robot->getCatapult();
     if (catapult != nullptr)
         updateCatapult(catapult, master);
+    
+    // Update the flywheel
+    Flywheel* flywheel = robot->getFlywheel();
+    if (flywheel != nullptr)
+        updateFlywheel(flywheel, master);
 }

@@ -6,10 +6,12 @@
 #include "./main.h"
 #include "./robot/Robot.hpp"
 #include "./menu/MenuData.hpp"
+#include "pros/misc.hpp"
 
 // Function prototypes
 void positionUpdateFunction(void* parameters);
 void positionPrintFunction(void* parameters);
+void flywheelUpdateFunction(void* parameters);
 
 /**
  * This class manages subsystem control for the robot
@@ -40,6 +42,12 @@ private:
      * @param holoDrive The catapult being controlled
      */
     void updateCatapult(Catapult* catapult, pros::Controller master);
+
+    /**
+     * Updates the controls for the flywheel
+     * @param flywheel The flywheel being controlled
+     */
+    void updateFlywheel(Flywheel* flywheel, pros::Controller master);
 
 public:
     /**

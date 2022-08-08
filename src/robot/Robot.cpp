@@ -1,6 +1,5 @@
 // Included libraries
 #include "robot/Robot.hpp"
-#include "processes/PositionSystem.hpp"
 
 // ROBOTBUILDER CLASS
 
@@ -11,6 +10,7 @@ Robot::RobotBuilder::RobotBuilder()
 	tankDrive = nullptr;
 	holoDrive = nullptr;
 	catapult = nullptr;
+	flywheel = nullptr;
 }
 
 // Destructor definitions -----------------------------------------------------
@@ -20,6 +20,7 @@ Robot::RobotBuilder::~RobotBuilder()
 	tankDrive = nullptr;
 	holoDrive = nullptr;
 	catapult = nullptr;
+	flywheel = nullptr;
 }
 
 // Public method definitions --------------------------------------------------
@@ -47,6 +48,12 @@ Robot::RobotBuilder* Robot::RobotBuilder::withCatapult(Catapult* catapult)
 	return this;
 }
 
+Robot::RobotBuilder* Robot::RobotBuilder::withFlywheel(Flywheel* flywheel)
+{
+	this->flywheel = flywheel;
+	return this;
+}
+
 Robot* Robot::RobotBuilder::build()
 {
 	return new Robot(this);
@@ -61,6 +68,7 @@ Robot::Robot(RobotBuilder* builder)
 	this->tankDrive = builder->tankDrive;
 	this->holoDrive = builder->holoDrive;
 	this->catapult = builder->catapult;
+	this->flywheel = builder->flywheel;
 }
 
 // Destructor definitions -----------------------------------------------------
@@ -89,6 +97,12 @@ Robot::~Robot()
 		delete catapult;
 		catapult = nullptr;
 	}
+
+	if (flywheel != nullptr)
+	{
+		delete flywheel;
+		flywheel = nullptr;
+	}
 }
 
 // Private method definitions -------------------------------------------------
@@ -104,6 +118,8 @@ void Robot::initialize()
 		holoDrive->initialize();
 	if (catapult != nullptr)
 		catapult->initialize();
+	if (flywheel != nullptr)
+		flywheel->initialize();
 }
 
 PositionSystem* Robot::getPositionSystem()
@@ -124,4 +140,9 @@ HoloDrive* Robot::getHoloDrive()
 Catapult* Robot::getCatapult()
 {
 	return catapult;
+}
+
+Flywheel* Robot::getFlywheel()
+{
+	return flywheel;
 }
