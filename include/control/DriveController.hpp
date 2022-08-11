@@ -12,6 +12,7 @@
 void positionUpdateFunction(void* parameters);
 void positionPrintFunction(void* parameters);
 void flywheelUpdateFunction(void* parameters);
+void turretUpdateFunction(void* parameters);
 
 /**
  * This class manages subsystem control for the robot
@@ -48,6 +49,12 @@ private:
      * @param flywheel The flywheel being controlled
      */
     void updateFlywheel(Flywheel* flywheel, pros::Controller master);
+
+    /**
+     * Updates the controls for the turret
+     * @param turret The turret being controlled
+     */
+    void updateTurret(Turret* turret, pros::Controller master);
 
 public:
     /**

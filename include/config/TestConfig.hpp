@@ -49,6 +49,26 @@ namespace TestConfig
     extern const double FLYWHEEL_MAX_RPM;
 
     /**
+     * The starting angle of the turret
+     */
+    extern const double TURRET_START_ANGLE;
+
+    /**
+     * The counts per degree for the turret
+     */
+    extern const double TURRET_COUNTS_PER_DEGREE;
+
+    /**
+     * The minimum angle of the turret
+     */
+    extern const double TURRET_MIN_ANGLE;
+
+    /**
+     * The maximum angle of the turret
+     */
+    extern const double TURRET_MAX_ANGLE;
+
+    /**
      * The ports for the left front drive motors
      */
     extern const int LEFT_FRONT_DRIVE_1_PORT;

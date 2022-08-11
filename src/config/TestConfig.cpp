@@ -13,6 +13,10 @@ namespace TestConfig
     const double FLYWHEEL_WHEEL_SIZE = 3.25;
     const double FLYWHEEL_COUNTS_PER_REVOLUTION = 42.86;
     const double FLYWHEEL_MAX_RPM = 3500.0;
+    const double TURRET_START_ANGLE = 0.0;
+    const double TURRET_COUNTS_PER_DEGREE = 17.5;
+    const double TURRET_MIN_ANGLE = -180.0;
+    const double TURRET_MAX_ANGLE = 180.0;
 
     // Motor ports
     const int LEFT_FRONT_DRIVE_1_PORT = 19;

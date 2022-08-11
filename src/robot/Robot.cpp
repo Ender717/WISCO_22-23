@@ -11,6 +11,7 @@ Robot::RobotBuilder::RobotBuilder()
 	holoDrive = nullptr;
 	catapult = nullptr;
 	flywheel = nullptr;
+	turret = nullptr;
 }
 
 // Destructor definitions -----------------------------------------------------
@@ -21,6 +22,7 @@ Robot::RobotBuilder::~RobotBuilder()
 	holoDrive = nullptr;
 	catapult = nullptr;
 	flywheel = nullptr;
+	turret = nullptr;
 }
 
 // Public method definitions --------------------------------------------------
@@ -54,6 +56,12 @@ Robot::RobotBuilder* Robot::RobotBuilder::withFlywheel(Flywheel* flywheel)
 	return this;
 }
 
+Robot::RobotBuilder* Robot::RobotBuilder::withTurret(Turret *turret)
+{
+	this->turret = turret;
+	return this;
+}
+
 Robot* Robot::RobotBuilder::build()
 {
 	return new Robot(this);
@@ -69,6 +77,7 @@ Robot::Robot(RobotBuilder* builder)
 	this->holoDrive = builder->holoDrive;
 	this->catapult = builder->catapult;
 	this->flywheel = builder->flywheel;
+	this->turret = builder->turret;
 }
 
 // Destructor definitions -----------------------------------------------------
@@ -103,6 +112,12 @@ Robot::~Robot()
 		delete flywheel;
 		flywheel = nullptr;
 	}
+
+	if (turret != nullptr)
+	{
+		delete turret;
+		turret = nullptr;
+	}
 }
 
 // Private method definitions -------------------------------------------------
@@ -120,6 +135,8 @@ void Robot::initialize()
 		catapult->initialize();
 	if (flywheel != nullptr)
 		flywheel->initialize();
+	if (turret != nullptr)
+		turret->initialize();
 }
 
 PositionSystem* Robot::getPositionSystem()
@@ -145,4 +162,9 @@ Catapult* Robot::getCatapult()
 Flywheel* Robot::getFlywheel()
 {
 	return flywheel;
+}
+
+Turret* Robot::getTurret()
+{
+	return turret;
 }

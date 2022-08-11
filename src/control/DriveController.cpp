@@ -10,7 +10,7 @@ void positionUpdateFunction(void *parameters)
     while (true)
     {
         positionSystem->updatePosition();
-        pros::delay(100);
+        pros::delay(10);
     }
 }
 
@@ -25,7 +25,7 @@ void positionPrintFunction(void *parameters)
         pros::screen::print(pros::E_TEXT_LARGE, 20, 90, "Theta: %.2f", position->getTheta() * 180.0 / 3.1415);
         delete position;
         position = nullptr;
-        pros::delay(100);
+        pros::delay(200);
     }
 }
 
@@ -34,8 +34,28 @@ void flywheelUpdateFunction(void* parameters)
     Flywheel* flywheel = (Flywheel*)parameters;
     while (true)
     {
-        flywheel->update();
+        flywheel->updateRPM();
+        pros::delay(50);
+    }
+}
+
+void flywheelControlFunction(void* parameters)
+{
+    Flywheel* flywheel = (Flywheel*)parameters;
+    while (true)
+    {
+        flywheel->updateControl();
         pros::delay(200);
+    }
+}
+
+void turretUpdateFunction(void* parameters)
+{
+    Turret* turret = (Turret*)parameters;
+    while (true)
+    {
+        turret->update();
+        pros::delay(50);
     }
 }
 
@@ -186,6 +206,30 @@ void DriveController::updateFlywheel(Flywheel* flywheel, pros::Controller master
     pros::screen::print(pros::E_TEXT_LARGE, 20, 170, "Target RPM: %.2f", flywheel->getTargetRPM());
 }
 
+void DriveController::updateTurret(Turret* turret, pros::Controller master)
+{
+    double adjust = 0.0;
+
+    // Update the flywheel RPM
+    switch (MenuData::getProfile())
+    {
+        case Menu::Profiles::HENRY:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) * 30;
+            break;
+        case Menu::Profiles::JOHN:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) * 30;
+            break;
+        case Menu::Profiles::NATHAN:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) * 30;
+            break;
+    }
+
+    pros::screen::print(pros::E_TEXT_LARGE, 260, 50, "cur: %.2f", turret->getAngle());
+    pros::screen::print(pros::E_TEXT_LARGE, 260, 90, "tar: %.2f", turret->getTargetAngle());
+    double targetAngle = turret->getTargetAngle();
+    turret->setAngle(targetAngle + adjust);
+}
+
 // Public method definitions
 
 void DriveController::initialize()
@@ -194,18 +238,26 @@ void DriveController::initialize()
     PositionSystem* positionSystem = robot->getPositionSystem();
     if (positionSystem != nullptr)
     {
-        void* parameters = (void*)positionSystem;
-        pros::Task positionUpdateTask(positionUpdateFunction, parameters, "positionUpdateTask");
-        parameters = (void*)positionSystem;
-        pros::Task positionPrintTask(positionPrintFunction, parameters, "positionPrintTask");
+        void* arguments = (void*)positionSystem;
+        pros::Task positionUpdateTask(positionUpdateFunction, arguments, "positionUpdateTask");
+        pros::Task positionPrintTask(positionPrintFunction, arguments, "positionPrintTask");
     }
 
     // Initialize the flywheel
     Flywheel* flywheel = robot->getFlywheel();
     if (flywheel != nullptr)
     {
-        void* parameters = (void*)flywheel;
-        pros::Task flywheelUpdateTask(flywheelUpdateFunction, parameters, "flywheelUpdateTask");
+        void* arguments = (void*)flywheel;
+        pros::Task flywheelUpdateTask(flywheelUpdateFunction, arguments, "flywheelUpdateTask");
+        pros::Task flywheelControlTask(flywheelControlFunction, arguments, "flywheelControlTask");
+    }
+
+    // Initialize the turret
+    Turret* turret = robot->getTurret();
+    if (turret != nullptr)
+    {
+        void* arguments = (void*)turret;
+        pros::Task turretUpdateTask(turretUpdateFunction, arguments, "turretUpdateTask");
     }
 }
 
@@ -230,4 +282,9 @@ void DriveController::update(pros::Controller master)
     Flywheel* flywheel = robot->getFlywheel();
     if (flywheel != nullptr)
         updateFlywheel(flywheel, master);
+    
+    // Update the turret
+    Turret* turret = robot->getTurret();
+    if (turret != nullptr)
+        updateTurret(turret, master);
 }

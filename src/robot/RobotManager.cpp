@@ -1,6 +1,7 @@
 // Included libraries
 #include "robot/RobotManager.hpp"
 #include "config/TestConfig.hpp"
+#include "pros/motors.h"
 
 // Constructor definitions -----------------------------------------------------
 RobotManager::RobotManager()
@@ -67,7 +68,8 @@ void RobotManager::createTestRobot()
     // Create the PID controllers
     PID::PIDBuilder* pidBuilder = new PID::PIDBuilder();
     PID* drivePID = pidBuilder->withKp(1.0)->withKi(0.0)->withKd(0.0)->build();
-    PID* flywheelPID = pidBuilder->withKp(2.5)->withKi(5.0)->withKd(0.01)->withIntegralLimit(127.0)->withMin(0.0)->build();
+    PID* flywheelPID = pidBuilder->withKp(0.05)->withKi(0.08)->withKd(0.01)->withIntegralLimit(130.0)->withMin(0.0)->withMax(127.0)->build();
+    PID* turretPID = pidBuilder->withKp(0.14)->withKi(0.02)->withKd(0.002)->withMin(-127.0)->withMax(127.0)->build();
 
     // Create the position system
     PositionSystem::PositionSystemBuilder* positionSystemBuilder = new PositionSystem::PositionSystemBuilder();
@@ -108,12 +110,26 @@ void RobotManager::createTestRobot()
     delete flywheelBuilder;
     flywheelBuilder = nullptr;
 
+    // Create the turret
+    Turret::TurretBuilder* turretBuilder = new Turret::TurretBuilder();
+    Turret* turret = turretBuilder->
+        withMotor(new pros::Motor(TestConfig::TURRET_1_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS))->
+        withPID(turretPID)->
+        withStartAngle(TestConfig::TURRET_START_ANGLE)->
+        withCountsPerDegree(TestConfig::TURRET_COUNTS_PER_DEGREE)->
+        withMinAngle(TestConfig::TURRET_MIN_ANGLE)->
+        withMaxAngle(TestConfig::TURRET_MAX_ANGLE)->
+        build();
+    delete turretBuilder;
+    turretBuilder = nullptr;
+
     // Create the robot
     Robot::RobotBuilder* robotBuilder = new Robot::RobotBuilder();
     robot = robotBuilder->
         withPositionSystem(positionSystem)->
         withHoloDrive(holoDrive)->
         withFlywheel(flywheel)->
+        withTurret(turret)->
         build();
     delete robotBuilder;
     robotBuilder = nullptr;

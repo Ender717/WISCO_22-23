@@ -16,6 +16,11 @@ class Flywheel
 {
 private:
     /**
+     * The size of the buffer for the rolling average for RPM
+     */
+    static const int RPM_BUFFER_SIZE = 5;
+
+    /**
      * The list of motors on the flywheel
      */
     std::list<pros::Motor*>* motorList;
@@ -41,11 +46,6 @@ private:
     double maxRPM;
 
     /**
-     * The power currently being sent to the motors
-     */
-    double motorPower;
-
-    /**
      * The position of the flywheel during the last loop
      * Used for RPM tracking
      */
@@ -60,7 +60,7 @@ private:
     /**
      * The current rpm of the flywheel
      */
-    double currentRPM;
+    double currentRPM[RPM_BUFFER_SIZE];
 
     /**
      * The target rpm of the flywheel
@@ -157,9 +157,14 @@ public:
     void initialize();
 
     /**
-     * Updates the state of the flywheel
+     * Updates the rpm of the flywheel
      */
-    void update();
+    void updateRPM();
+
+    /**
+     * Updates the controls for the flywheel
+     */
+    void updateControl();
 
     /**
      * Sets the flywheel motors to a specific power level

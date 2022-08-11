@@ -1,5 +1,6 @@
 // Included libraries
 #include "processes/PID.hpp"
+#include "pros/screen.h"
 
 // Constructor definitions ------------------------------------------------
 PID::PIDBuilder::PIDBuilder()
@@ -192,8 +193,8 @@ double PID::getControlValue(double currentValue)
     // Set the integral control value
     //if (pValue > min && pValue < max)
     iValue += error * loopTime;
-    if (fabs(iValue) > integralLimit)
-        iValue = (iValue / fabs(iValue)) * integralLimit;
+    if (fabs(iValue * ki) > integralLimit && ki != 0)
+        iValue = (iValue / fabs(iValue)) * integralLimit / ki;
 
     // Set the derivative control value
     double dValue = (error - pastError) / loopTime;

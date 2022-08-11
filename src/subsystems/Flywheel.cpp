@@ -1,6 +1,5 @@
 // Defined header
 #include "subsystems/Flywheel.hpp"
-#include "pros/motors.h"
 
 // BUILDER CLASS
 
@@ -133,10 +132,8 @@ Flywheel::Flywheel(FlywheelBuilder* builder)
     else
         this->maxRPM = DBL_MAX;
 
-    motorPower = 0.0;
     lastPosition = 0.0;
     lastTime = 0.0;
-    currentRPM = 0.0;
     targetRPM = 0.0;
 }
 
@@ -178,9 +175,11 @@ void Flywheel::initialize()
     if (flywheelPID != nullptr)
         flywheelPID->setTargetValue(0.0);
     lastTime = pros::c::millis();
+    for (int i = 0; i < RPM_BUFFER_SIZE; i++)
+        currentRPM[i] = 0.0;
 }
 
-void Flywheel::update()
+void Flywheel::updateRPM()
 {
     if (motorList != nullptr && motorList->front() != nullptr)
     {
@@ -191,17 +190,28 @@ void Flywheel::update()
         double timeChange = currentTime - lastTime;
 
         double countsPerSecond = positionChange / (timeChange / 1000.0);
-        currentRPM = countsPerSecond * 60.0 / countsPerRevolution;
+        double RPM = countsPerSecond * 60.0 / countsPerRevolution;
 
-        setFlywheel(flywheelPID->getControlValue(currentRPM / 60.0));
+        for (int i = 0; i < RPM_BUFFER_SIZE - 1; i++)
+            currentRPM[i] = currentRPM[i + 1];
+        currentRPM[RPM_BUFFER_SIZE - 1] = RPM;
 
         lastPosition = currentPosition;
         lastTime = currentTime;
     }
 }
 
+void Flywheel::updateControl()
+{
+    if (flywheelPID != nullptr)
+        setFlywheel(flywheelPID->getControlValue(getRPM()));
+    else
+        setFlywheel(0.0);
+}
+
 void Flywheel::setFlywheel(double power)
 {
+    pros::screen::print(pros::E_TEXT_LARGE, 270, 10, "fp: %.2f", power);
     for (std::list<pros::Motor*>::iterator iterator = motorList->begin(); 
          iterator != motorList->end(); iterator++)
         (*iterator)->move(power);
@@ -215,12 +225,16 @@ void Flywheel::setRPM(double RPM)
     else if (targetRPM < 0.0)
         targetRPM = 0.0;
     if (flywheelPID != nullptr)
-        flywheelPID->setTargetValue(RPM / 60.0);
+        flywheelPID->setTargetValue(targetRPM);
 }
 
 double Flywheel::getRPM()
 {
-    return currentRPM;
+    double sum = 0.0;
+    for (int i = 0; i < RPM_BUFFER_SIZE; i++)
+        sum += currentRPM[i];
+    double RPM = sum / RPM_BUFFER_SIZE;
+    return RPM;
 }
 
 double Flywheel::getTargetRPM()
