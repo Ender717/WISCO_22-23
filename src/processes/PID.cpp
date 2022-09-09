@@ -1,5 +1,6 @@
 // Included libraries
 #include "processes/PID.hpp"
+#include "pros/screen.h"
 
 // Constructor definitions ------------------------------------------------
 PID::PIDBuilder::PIDBuilder()
@@ -177,21 +178,23 @@ PID::PID(const PID& copyPID)
 // Public methods -------------------------------------------------------------
 double PID::getControlValue(double currentValue)
 {
+    mutex.take();
+
     // Calculate the current error
     double error = targetValue - currentValue;
 
     // Calculate the loop time
     double currentTime = pros::c::millis();
-    double loopTime = (currentTime - pastTime) / 1000;
+    double loopTime = (currentTime - pastTime) / 1000.0;
 
     // Set the proportional control value
     double pValue = error;
 
     // Set the integral control value
-    if (pValue > min && pValue < max)
-        iValue += error * loopTime;
-    if (fabs(iValue) > integralLimit)
-        iValue = (iValue / fabs(iValue)) * integralLimit;
+    //if (pValue > min && pValue < max)
+    iValue += error * loopTime;
+    if (fabs(iValue * ki) > integralLimit && ki != 0)
+        iValue = (iValue / fabs(iValue)) * integralLimit / ki;
 
     // Set the derivative control value
     double dValue = (error - pastError) / loopTime;
@@ -210,11 +213,15 @@ double PID::getControlValue(double currentValue)
     pastError = error;
     pastTime = currentTime;
 
+    mutex.give();
+
     // Return the result
     return satValue;
 }
 
 void PID::setTargetValue(double targetValue)
 {
+    mutex.take();
     this->targetValue = targetValue;
+    mutex.give();
 }

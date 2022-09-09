@@ -6,6 +6,10 @@ PositionSystem::PositionSystemBuilder::PositionSystemBuilder()
     linearTrackingSensor = nullptr;
     strafeTrackingSensor = nullptr;
     inertialSensor = nullptr;
+    linearTrackingMultiplier = nullptr;
+    strafeTrackingMultiplier = nullptr;
+    inertialMultiplier = nullptr;
+    wheelSize = nullptr;
     linearTrackingDistance = nullptr;
     strafeTrackingDistance = nullptr;
     startX = nullptr;
@@ -19,6 +23,26 @@ PositionSystem::PositionSystemBuilder::~PositionSystemBuilder()
     linearTrackingSensor = nullptr;
     strafeTrackingSensor = nullptr;
     inertialSensor = nullptr;
+    if (linearTrackingMultiplier != nullptr)
+    {
+        delete linearTrackingMultiplier;
+        linearTrackingMultiplier = nullptr;
+    }
+    if (strafeTrackingMultiplier != nullptr)
+    {
+        delete strafeTrackingMultiplier;
+        strafeTrackingMultiplier = nullptr;
+    }
+    if (inertialMultiplier != nullptr)
+    {
+        delete inertialMultiplier;
+        inertialMultiplier = nullptr;
+    }
+    if (wheelSize != nullptr)
+    {
+        delete wheelSize;
+        wheelSize = nullptr;
+    }
     if (linearTrackingDistance != nullptr)
     {
         delete linearTrackingDistance;
@@ -65,6 +89,38 @@ PositionSystem::PositionSystemBuilder* PositionSystem::PositionSystemBuilder::wi
     return this;
 }
 
+PositionSystem::PositionSystemBuilder* PositionSystem::PositionSystemBuilder::withLinearTrackingMultiplier(double linearTrackingMultiplier)
+{
+    if (this->linearTrackingMultiplier == nullptr)
+        this->linearTrackingMultiplier = new double;
+    *this->linearTrackingMultiplier = linearTrackingMultiplier;
+    return this;
+}
+
+PositionSystem::PositionSystemBuilder* PositionSystem::PositionSystemBuilder::withStrafeTrackingMultiplier(double strafeTrackingMultiplier)
+{
+    if (this->strafeTrackingMultiplier == nullptr)
+        this->strafeTrackingMultiplier = new double;
+    *this->strafeTrackingMultiplier = strafeTrackingMultiplier;
+    return this;
+}
+
+PositionSystem::PositionSystemBuilder* PositionSystem::PositionSystemBuilder::withInertialMultiplier(double inertialMultiplier)
+{
+    if (this->inertialMultiplier == nullptr)
+        this->inertialMultiplier = new double;
+    *this->inertialMultiplier = inertialMultiplier;
+    return this;
+}
+
+PositionSystem::PositionSystemBuilder* PositionSystem::PositionSystemBuilder::withWheelSize(double wheelSize)
+{
+    if (this->wheelSize == nullptr)
+        this->wheelSize = new double;
+    *this->wheelSize = wheelSize;
+    return this;
+}
+
 PositionSystem::PositionSystemBuilder* PositionSystem::PositionSystemBuilder::withLinearDistance(double linearTrackingDistance)
 {
     if (this->linearTrackingDistance == nullptr)
@@ -101,7 +157,7 @@ PositionSystem::PositionSystemBuilder* PositionSystem::PositionSystemBuilder::wi
 {
     if (this->startTheta == nullptr)
         this->startTheta = new double;
-    *this->startTheta = (startAngle * 3.1415 / 180.0);
+    *this->startTheta = (startAngle * M_PI / 180.0);
     return this;
 }
 
@@ -117,6 +173,26 @@ PositionSystem::PositionSystem(PositionSystemBuilder* builder)
     this->linearTrackingSensor = builder->linearTrackingSensor;
     this->strafeTrackingSensor = builder->strafeTrackingSensor;
     this->inertialSensor = builder->inertialSensor;
+
+    if (builder->linearTrackingMultiplier != nullptr)
+        this->linearTrackingMultiplier = *builder->linearTrackingMultiplier;
+    else
+        this->linearTrackingMultiplier = 1.0;
+
+    if (builder->strafeTrackingMultiplier != nullptr)
+        this->strafeTrackingMultiplier = *builder->strafeTrackingMultiplier;
+    else
+        this->strafeTrackingMultiplier = 1.0;
+
+    if (builder->inertialMultiplier != nullptr)
+        this->inertialMultiplier = *builder->inertialMultiplier;
+    else
+        this->inertialMultiplier = 1.0;
+
+    if (builder->wheelSize != nullptr)
+        this->wheelSize = *builder->wheelSize;
+    else
+        this->wheelSize = DEFAULT_WHEEL_SIZE;
 
     if (builder->linearTrackingDistance != nullptr)
         this->linearTrackingDistance = *builder->linearTrackingDistance;
@@ -176,7 +252,7 @@ PositionSystem::~PositionSystem()
 double PositionSystem::countsToInches(double counts)
 {
     double rotations = counts / COUNTS_PER_ROTATION;
-    double inchesPerRotation = WHEEL_SIZE * PI;
+    double inchesPerRotation = wheelSize * M_PI;
     return rotations * inchesPerRotation;
 }
 
@@ -198,6 +274,7 @@ void PositionSystem::initialize()
 {
     // Initialize the tracking wheels
     linearTrackingSensor->set_position(0.0);
+    linearTrackingSensor->set_reversed(true);
     strafeTrackingSensor->set_position(0.0);
 
     // Initialize the inertial sensor
@@ -214,12 +291,25 @@ void PositionSystem::updatePosition()
     database.startWriting();
 
     // Calculate the distance moved by each wheel since the last cycle
-    double linearDistance = countsToInches(linearTrackingSensor->get_position()) - lastLinear;
-    double strafeDistance = countsToInches(strafeTrackingSensor->get_position()) - lastStrafe;
+    double linearDistance = countsToInches(linearTrackingSensor->get_position() * linearTrackingMultiplier) - lastLinear;
+    double strafeDistance = countsToInches(strafeTrackingSensor->get_position() * strafeTrackingMultiplier) - lastStrafe;
 
     // Calculate the change in theta
-    currentTheta = inertialSensor->get_rotation() + resetTheta;
-    thetaVelocity = currentTheta - lastTheta;
+    double uncappedTheta = -(inertialSensor->get_rotation() * inertialMultiplier * M_PI / 180.0);
+    double cappedTheta = uncappedTheta;
+    double cappedLastTheta = lastTheta;
+    while (cappedTheta < -M_PI)
+    {
+        cappedTheta += 2 * M_PI;
+        cappedLastTheta += 2 * M_PI;
+    }
+    while (cappedTheta > M_PI)
+    {
+        cappedTheta -= 2 * M_PI;
+        cappedLastTheta -= 2 * M_PI;
+    }
+    currentTheta = cappedTheta;
+    thetaVelocity = currentTheta - cappedLastTheta;
 
     // Calculate the local offset
     double forwardDistance = 0.0;
@@ -236,7 +326,7 @@ void PositionSystem::updatePosition()
     }
 
     // Calculate the average orientation
-    double averageTheta = lastTheta + (thetaVelocity / 2.0);
+    double averageTheta = cappedLastTheta + (thetaVelocity / 2.0);
 
     // Calculate the global offset
     xVelocity = sidewaysDistance * -sin(averageTheta) + forwardDistance * cos(averageTheta);
@@ -249,7 +339,7 @@ void PositionSystem::updatePosition()
     // Update the stored previous values
     lastLinear += linearDistance;
     lastStrafe += strafeDistance;
-    lastTheta = currentTheta;
+    lastTheta = uncappedTheta;
 
     // Release write PositionSystems from the database manager
     database.stopWriting();
@@ -265,11 +355,11 @@ void PositionSystem::setPosition(double x, double y, double theta)
     database.stopWriting();
 }
 
-Position PositionSystem::getPosition()
+Position* PositionSystem::getPosition()
 {
     database.startReading();
     Position::PositionBuilder* builder = new Position::PositionBuilder();
-    Position position = builder->
+    Position* position = builder->
         withX(currentX)->
         withY(currentY)->
         withTheta(currentTheta)->

@@ -4,9 +4,12 @@
 
 // Included libraries
 #include "./main.h"
+#include "./processes/PositionSystem.hpp"
 #include "./subsystems/HoloDrive.hpp"
 #include "./subsystems/TankDrive.hpp"
 #include "./subsystems/Catapult.hpp"
+#include "./subsystems/Flywheel.hpp"
+#include "./subsystems/Turret.hpp"
 
 /**
  * This class manages a robot
@@ -14,6 +17,11 @@
 class Robot
 {
 private:
+    /**
+     * The position tracking system for the robot
+     */
+    PositionSystem* positionSystem;
+
     /**
      * The tank drive for the robot
      */
@@ -29,6 +37,16 @@ private:
      */
     Catapult* catapult;
 
+    /**
+     * The flywheel for the robot
+     */
+    Flywheel* flywheel;
+
+    /**
+     * The turret for the robot
+     */
+    Turret* turret;
+
 public:
     /**
      * Builder class for Robot
@@ -39,9 +57,12 @@ public:
         /**
          * Build attributes
          */
+        PositionSystem* positionSystem;
         TankDrive* tankDrive;
         HoloDrive* holoDrive;
         Catapult* catapult;
+        Flywheel* flywheel;
+        Turret* turret;
 
         /**
          * Default constructor for RobotBuilder
@@ -52,6 +73,13 @@ public:
          * Default destructor for RobotBuilder
          */
         ~RobotBuilder();
+
+        /**
+         * Wither method to add a positionSystem to the build
+         * @param positionSystem the positionSystem object being added
+         * @return The builder for build chaining
+         */
+        RobotBuilder* withPositionSystem(PositionSystem* positionSystem);
 
         /**
          * Wither method to add a tankDrive to the build
@@ -73,6 +101,20 @@ public:
          * @return The builder for build chaining
          */
         RobotBuilder* withCatapult(Catapult* catapult);
+
+        /**
+         * Wither method to add a flywheel to the build
+         * @param flywheel the flywheel object being added
+         * @return The builder for build chaining
+         */
+        RobotBuilder* withFlywheel(Flywheel* flywheel);
+
+        /**
+         * Wither method to add a turret to the build
+         * @param turret the turret object being added
+         * @return The builder for build chaining
+         */
+        RobotBuilder* withTurret(Turret* turret);
 
         /**
          * Builds a robot using the stored data
@@ -99,6 +141,12 @@ public:
     void initialize();
 
     /**
+     * Gets the positionSystem for this robot
+     * @return A pointer to the position system
+     */
+    PositionSystem* getPositionSystem();
+
+    /**
      * Gets the tankDrive for this robot
      * @return A pointer to the tank drive
      */
@@ -115,6 +163,18 @@ public:
      * @return A pointer to the catapult
      */
     Catapult* getCatapult();
+
+    /**
+     * Gets the flywheel for this robot
+     * @return A pointer to the flywheel
+     */
+    Flywheel* getFlywheel();
+
+    /**
+     * Gets the turret for this robot
+     * @return A pointer to the turret
+     */
+    Turret* getTurret();
 };
 
 #endif

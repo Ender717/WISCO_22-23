@@ -18,6 +18,11 @@ private:
     static constexpr int MILLISECONDS_PER_SECOND = 1000;
 
     /**
+     * The mutex for the PID controller
+     */
+    Mutex mutex;
+
+    /**
      * The control constants for the PID controller
      */
     double kp;

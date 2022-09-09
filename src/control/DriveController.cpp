@@ -1,8 +1,63 @@
 // Defined header
 #include "control/DriveController.hpp"
 #include "pros/misc.h"
-#include "pros/screen.h"
-#include "subsystems/Catapult.hpp"
+#include "pros/rtos.hpp"
+
+// Function declarations
+void positionUpdateFunction(void *parameters)
+{
+    PositionSystem* positionSystem = (PositionSystem*)parameters;
+    while (true)
+    {
+        positionSystem->updatePosition();
+        pros::delay(10);
+    }
+}
+
+void positionPrintFunction(void *parameters)
+{
+    PositionSystem* positionSystem = (PositionSystem*)parameters;
+    while (true)
+    {
+        Position* position = positionSystem->getPosition();
+        pros::screen::print(pros::E_TEXT_LARGE, 20, 10, "X: %.2f", position->getX());
+        pros::screen::print(pros::E_TEXT_LARGE, 20, 50, "Y: %.2f", position->getY());
+        pros::screen::print(pros::E_TEXT_LARGE, 20, 90, "Theta: %.2f", position->getTheta() * 180.0 / 3.1415);
+        delete position;
+        position = nullptr;
+        pros::delay(200);
+    }
+}
+
+void flywheelUpdateFunction(void* parameters)
+{
+    Flywheel* flywheel = (Flywheel*)parameters;
+    while (true)
+    {
+        flywheel->updateRPM();
+        pros::delay(50);
+    }
+}
+
+void flywheelControlFunction(void* parameters)
+{
+    Flywheel* flywheel = (Flywheel*)parameters;
+    while (true)
+    {
+        flywheel->updateControl();
+        pros::delay(200);
+    }
+}
+
+void turretUpdateFunction(void* parameters)
+{
+    Turret* turret = (Turret*)parameters;
+    while (true)
+    {
+        turret->update();
+        pros::delay(50);
+    }
+}
 
 // Constructor definitions ----------------------------------------------------
 DriveController::DriveController(Robot* robot)
@@ -100,10 +155,6 @@ void DriveController::updateHoloDrive(HoloDrive* holoDrive, pros::Controller mas
 
 void DriveController::updateCatapult(Catapult* catapult, pros::Controller master)
 {
-    // Create the control variables
-    double leftPower = 0.0;
-    double rightPower = 0.0;
-
     // Update the catapult loading
     switch (MenuData::getProfile())
     {
@@ -131,7 +182,85 @@ void DriveController::updateCatapult(Catapult* catapult, pros::Controller master
         catapult->setCatapult(0.0);
 }
 
+void DriveController::updateFlywheel(Flywheel* flywheel, pros::Controller master)
+{
+    double adjust = 0.0;
+
+    // Update the flywheel RPM
+    switch (MenuData::getProfile())
+    {
+        case Menu::Profiles::HENRY:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 100;
+            break;
+        case Menu::Profiles::JOHN:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 100;
+            break;
+        case Menu::Profiles::NATHAN:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) * 100;
+            break;
+    }
+
+    double targetRPM = flywheel->getTargetRPM();
+    flywheel->setRPM(targetRPM + adjust);
+    pros::screen::print(pros::E_TEXT_LARGE, 20, 130, "Current RPM: %.2f", flywheel->getRPM());
+    pros::screen::print(pros::E_TEXT_LARGE, 20, 170, "Target RPM: %.2f", flywheel->getTargetRPM());
+}
+
+void DriveController::updateTurret(Turret* turret, pros::Controller master)
+{
+    double adjust = 0.0;
+
+    // Update the flywheel RPM
+    switch (MenuData::getProfile())
+    {
+        case Menu::Profiles::HENRY:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) * 30;
+            break;
+        case Menu::Profiles::JOHN:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) * 30;
+            break;
+        case Menu::Profiles::NATHAN:
+            adjust = (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) - master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) * 30;
+            break;
+    }
+
+    pros::screen::print(pros::E_TEXT_LARGE, 260, 50, "cur: %.2f", turret->getAngle());
+    pros::screen::print(pros::E_TEXT_LARGE, 260, 90, "tar: %.2f", turret->getTargetAngle());
+    double targetAngle = turret->getTargetAngle();
+    turret->setAngle(targetAngle + adjust);
+}
+
 // Public method definitions
+
+void DriveController::initialize()
+{
+    // Initialize the position system
+    PositionSystem* positionSystem = robot->getPositionSystem();
+    if (positionSystem != nullptr)
+    {
+        void* arguments = (void*)positionSystem;
+        pros::Task positionUpdateTask(positionUpdateFunction, arguments, "positionUpdateTask");
+        pros::Task positionPrintTask(positionPrintFunction, arguments, "positionPrintTask");
+    }
+
+    // Initialize the flywheel
+    Flywheel* flywheel = robot->getFlywheel();
+    if (flywheel != nullptr)
+    {
+        void* arguments = (void*)flywheel;
+        pros::Task flywheelUpdateTask(flywheelUpdateFunction, arguments, "flywheelUpdateTask");
+        pros::Task flywheelControlTask(flywheelControlFunction, arguments, "flywheelControlTask");
+    }
+
+    // Initialize the turret
+    Turret* turret = robot->getTurret();
+    if (turret != nullptr)
+    {
+        void* arguments = (void*)turret;
+        pros::Task turretUpdateTask(turretUpdateFunction, arguments, "turretUpdateTask");
+    }
+}
+
 void DriveController::update(pros::Controller master)
 {
     // Update the tank drive
@@ -148,4 +277,14 @@ void DriveController::update(pros::Controller master)
     Catapult* catapult = robot->getCatapult();
     if (catapult != nullptr)
         updateCatapult(catapult, master);
+    
+    // Update the flywheel
+    Flywheel* flywheel = robot->getFlywheel();
+    if (flywheel != nullptr)
+        updateFlywheel(flywheel, master);
+    
+    // Update the turret
+    Turret* turret = robot->getTurret();
+    if (turret != nullptr)
+        updateTurret(turret, master);
 }

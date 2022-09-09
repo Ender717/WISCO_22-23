@@ -16,14 +16,15 @@
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-void opcontrol() 
+void opcontrol()
 {
     pros::Controller master(pros::E_CONTROLLER_MASTER);
     DriveController controller(RobotState::robot);
+    controller.initialize();
 
     while(true)
     {
         controller.update(master);
-        pros::delay(20);
+        pros::delay(50);
     }
 }

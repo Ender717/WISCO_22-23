@@ -6,6 +6,13 @@
 #include "./main.h"
 #include "./robot/Robot.hpp"
 #include "./menu/MenuData.hpp"
+#include "pros/misc.hpp"
+
+// Function prototypes
+void positionUpdateFunction(void* parameters);
+void positionPrintFunction(void* parameters);
+void flywheelUpdateFunction(void* parameters);
+void turretUpdateFunction(void* parameters);
 
 /**
  * This class manages subsystem control for the robot
@@ -37,6 +44,18 @@ private:
      */
     void updateCatapult(Catapult* catapult, pros::Controller master);
 
+    /**
+     * Updates the controls for the flywheel
+     * @param flywheel The flywheel being controlled
+     */
+    void updateFlywheel(Flywheel* flywheel, pros::Controller master);
+
+    /**
+     * Updates the controls for the turret
+     * @param turret The turret being controlled
+     */
+    void updateTurret(Turret* turret, pros::Controller master);
+
 public:
     /**
      * Parameterized constructor for a drive controller
@@ -48,6 +67,11 @@ public:
      * Default destructor for the drive controller
      */
     ~DriveController();
+
+    /**
+     * Initializes the controller
+     */
+    void initialize();
 
     /**
      * Updates the controller
