@@ -80,19 +80,19 @@ void DriveController::updateTankDrive(TankDrive* tankDrive, pros::Controller mas
     switch (MenuData::getProfile())
     {
         case Menu::Profiles::HENRY:
-            leftPower = (-master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) +
+            leftPower = (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) +
                 master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
-            rightPower = (-master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) -
+            rightPower = (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) -
                 master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
             break;
         case Menu::Profiles::JOHN:
-            leftPower = -master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-            rightPower = -master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+            leftPower = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+            rightPower = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
             break;
         case Menu::Profiles::NATHAN:
-            leftPower = (-master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) +
+            leftPower = (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) +
                 master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
-            rightPower = (-master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) -
+            rightPower = (master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) -
                 master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X));
             break;
     }
