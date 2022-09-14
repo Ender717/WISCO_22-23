@@ -144,10 +144,6 @@ void RobotManager::createCandyRobot()
         robot = nullptr;
     }
 
-    // Create the PID controllers
-    PID::PIDBuilder* pidBuilder = new PID::PIDBuilder();
-    PID* drivePID = pidBuilder->withKp(1.0)->withKi(0.0)->withKd(0.0)->build();
-
     // Create the tank drive
     TankDrive::TankDriveBuilder* tankDriveBuilder = new TankDrive::TankDriveBuilder();
     TankDrive *tankDrive =
@@ -170,9 +166,6 @@ void RobotManager::createCandyRobot()
             ->withRightMotor(new pros::Motor(CandyConfig::RIGHT_DRIVE_3_PORT,
                                              pros::E_MOTOR_GEARSET_06, true,
                                              pros::E_MOTOR_ENCODER_COUNTS))
-            ->withDistancePID(drivePID)
-            ->withAnglePID(drivePID)
-            ->withTurnPID(drivePID)
             ->build();
     delete tankDriveBuilder;
     tankDriveBuilder = nullptr;
