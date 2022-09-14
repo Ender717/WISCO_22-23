@@ -147,35 +147,40 @@ void RobotManager::createCandyRobot()
     // Create the PID controllers
     PID::PIDBuilder* pidBuilder = new PID::PIDBuilder();
     PID* drivePID = pidBuilder->withKp(1.0)->withKi(0.0)->withKd(0.0)->build();
-    PID* catapultPID = pidBuilder->withKp(3.0)->withKi(0.4)->withKd(0.1)->withIntegralLimit(80.0)->build();
 
     // Create the tank drive
     TankDrive::TankDriveBuilder* tankDriveBuilder = new TankDrive::TankDriveBuilder();
-    TankDrive* tankDrive = tankDriveBuilder->
-        withLeftMotor(new pros::Motor(CandyConfig::LEFT_DRIVE_1_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS))->
-        withLeftMotor(new pros::Motor(CandyConfig::LEFT_DRIVE_2_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS))->
-        withRightMotor(new pros::Motor(CandyConfig::RIGHT_DRIVE_1_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS))->
-        withRightMotor(new pros::Motor(CandyConfig::RIGHT_DRIVE_2_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS))->
-        build();
+    TankDrive *tankDrive =
+        tankDriveBuilder
+            ->withLeftMotor(new pros::Motor(CandyConfig::LEFT_DRIVE_1_PORT,
+                                            pros::E_MOTOR_GEARSET_06, false,
+                                            pros::E_MOTOR_ENCODER_COUNTS))
+            ->withLeftMotor(new pros::Motor(CandyConfig::LEFT_DRIVE_2_PORT,
+                                            pros::E_MOTOR_GEARSET_06, false,
+                                            pros::E_MOTOR_ENCODER_COUNTS))
+            ->withLeftMotor(new pros::Motor(CandyConfig::LEFT_DRIVE_3_PORT,
+                                            pros::E_MOTOR_GEARSET_06, false,
+                                            pros::E_MOTOR_ENCODER_COUNTS))
+            ->withRightMotor(new pros::Motor(CandyConfig::RIGHT_DRIVE_1_PORT,
+                                             pros::E_MOTOR_GEARSET_06, true,
+                                             pros::E_MOTOR_ENCODER_COUNTS))
+            ->withRightMotor(new pros::Motor(CandyConfig::RIGHT_DRIVE_2_PORT,
+                                             pros::E_MOTOR_GEARSET_06, true,
+                                             pros::E_MOTOR_ENCODER_COUNTS))
+            ->withRightMotor(new pros::Motor(CandyConfig::RIGHT_DRIVE_3_PORT,
+                                             pros::E_MOTOR_GEARSET_06, true,
+                                             pros::E_MOTOR_ENCODER_COUNTS))
+            ->withDistancePID(drivePID)
+            ->withAnglePID(drivePID)
+            ->withTurnPID(drivePID)
+            ->build();
     delete tankDriveBuilder;
     tankDriveBuilder = nullptr;
-
-    // Create the catapult
-    Catapult::CatapultBuilder* catapultBuilder = new Catapult::CatapultBuilder();
-    Catapult* catapult = catapultBuilder->
-        withMotor(new pros::Motor(CandyConfig::CATAPULT_1_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS))->
-        withPID(catapultPID)->
-        withCountsPerCycle(CandyConfig::CATAPULT_COUNTS_PER_CYCLE)->
-        withLoadedPosition(CandyConfig::CATAPULT_LOADED_POSITION)->
-        build();
-    delete catapultBuilder;
-    catapultBuilder = nullptr;
 
     // Create the robot
     Robot::RobotBuilder* robotBuilder = new Robot::RobotBuilder();
     robot = robotBuilder->
         withTankDrive(tankDrive)->
-        withCatapult(catapult)->
         build();
     delete robotBuilder;
     robotBuilder = nullptr;
